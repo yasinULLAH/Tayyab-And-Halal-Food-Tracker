@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tayyib Tracker</title>
+    <meta name="author" content="Yasin Ullah, Pakistani">
+    <style>
+        /*
+         * Tayyib Tracker - Personal Research Log
+         * Author: Yasin Ullah, Pakistani
+         */
+        :root {
+            --bg-color: #f4f7f6;
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --text-color: #343a40;
+            --status-researching: #ffc107; /* Yellow */
+            --status-halaal: #28a745; /* Green */
+            --status-mushbooh: #fd7e14; /* Orange */
+            --status-haram: #dc3545; /* Red */
+            --status-tayyib: #17a2b8; /* Cyan/Teal */
+            --font-mono: 'Courier New', Courier, monospace;
+            --font-sans: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --padding-base: 15px;
+            --margin-base: 15px;
+            --border-radius-base: 5px;
+            --shadow-base: 0 2px 4px rgba(0,0,0,.05);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--padding-base);
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #fff;
+            padding: var(--padding-base) 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-base);
+            margin-bottom: var(--margin-base);
+            text-align: center;
+            font-family: var(--font-mono);
+        }
+
+        header h1 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.8em;
+        }
+
+        nav {
+            background-color: #fff;
+            padding: var(--padding-base) 0;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-base);
+            margin-bottom: var(--margin-base);
+            text-align: center;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 1em;
+            color: var(--secondary-color);
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+        }
+
+        nav button:hover {
+            color: var(--primary-color);
+        }
+
+        nav button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        main {
+            flex-grow: 1;
+            background-color: #fff;
+            padding: var(--padding-base);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+            box-shadow: var(--shadow-base);
+        }
+
+        /* General Form Styling */
+        .form-group {
+            margin-bottom: var(--margin-base);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+            box-sizing: border-box;
+            font-family: var(--font-mono);
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input[type="file"] {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            margin-top: var(--margin-base);
+            text-align: right;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        button.secondary:hover {
+            background-color: #545b62;
+        }
+
+        button.danger {
+            background-color: var(--status-haram);
+        }
+        button.danger:hover {
+             background-color: #c82333;
+        }
+
+
+        /* Product List Styling */
+        #product-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #product-list li {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+            padding: var(--padding-base);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #product-list li:hover {
+            background-color: #e9ecef;
+        }
+
+        #product-list li .product-info {
+            flex-grow: 1;
+        }
+
+        #product-list li .product-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.2em;
+            color: var(--primary-color);
+            font-family: var(--font-mono);
+        }
+
+        #product-list li .product-info p {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        #product-list li .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-left: var(--padding-base);
+            flex-shrink: 0;
+        }
+
+        .status-indicator.status-Researching { background-color: var(--status-researching); }
+        .status-indicator.status-Halaal { background-color: var(--status-halaal); }
+        .status-indicator.status-Mushbooh { background-color: var(--status-mushbooh); }
+        .status-indicator.status-Haram { background-color: var(--status-haram); }
+        .status-indicator.status-Tayyib { background-color: var(--status-tayyib); }
+
+
+        /* Product Detail Styling */
+        #product-detail h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: var(--margin-base);
+            font-family: var(--font-mono);
+        }
+
+        #product-detail .detail-section {
+            margin-bottom: var(--margin-base) * 1.5;
+            padding: var(--padding-base);
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+        }
+
+        #product-detail .detail-section h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+            font-size: 1.1em;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-family: var(--font-mono);
+        }
+
+        #product-detail .detail-section p,
+        #product-detail .detail-section ul {
+            margin: 0;
+            padding: 0;
+            font-size: 0.95em;
+            white-space: pre-wrap; /* Preserve formatting from textarea */
+        }
+         #product-detail .detail-section ul {
+             list-style: disc inside;
+         }
+
+
+        #product-detail .status-display {
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        #product-detail .status-display .status-indicator {
+             margin-right: 10px;
+        }
+
+        #product-detail .image-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        #product-detail .image-gallery img {
+            max-width: 150px;
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+        }
+
+        /* Certifier List Styling */
+        #certifier-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #certifier-list li {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+            padding: var(--padding-base);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+         #certifier-list li:hover {
+             background-color: #e9ecef;
+         }
+        #certifier-list li .certifier-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            font-family: var(--font-mono);
+        }
+         #certifier-list li .certifier-info p {
+             margin: 0;
+             font-size: 0.9em;
+             color: var(--secondary-color);
+             white-space: pre-wrap;
+         }
+
+        /* Certifier Detail/Form Styling (reusing form styles) */
+        #certifier-detail h2, #certifier-form h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: var(--margin-base);
+            font-family: var(--font-mono);
+        }
+         #certifier-detail .detail-section h3 {
+             color: var(--secondary-color);
+             font-size: 1.1em;
+             border-bottom: 1px dashed var(--border-color);
+             padding-bottom: 5px;
+             margin-bottom: 10px;
+             font-family: var(--font-mono);
+         }
+
+
+        /* Import/Export Styling */
+        #import-export h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: var(--margin-base);
+            font-family: var(--font-mono);
+        }
+
+        #import-export .action-section {
+            margin-bottom: var(--margin-base) * 1.5;
+            padding: var(--padding-base);
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-base);
+        }
+         #import-export .action-section h3 {
+             margin-top: 0;
+             color: var(--secondary-color);
+             font-size: 1.1em;
+             border-bottom: 1px dashed var(--border-color);
+             padding-bottom: 5px;
+             margin-bottom: 10px;
+             font-family: var(--font-mono);
+         }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        .status-select-group label {
+            margin-right: 15px;
+            font-weight: normal;
+            font-family: var(--font-sans);
+            color: var(--text-color);
+        }
+         .status-select-group input[type="radio"] {
+             margin-right: 5px;
+         }
+
+        .filter-bar {
+            margin-bottom: var(--margin-base);
+            padding-bottom: var(--padding-base);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+         .filter-bar input[type="text"], .filter-bar select {
+             flex-grow: 1;
+             max-width: 300px;
+         }
+         .filter-bar label {
+             font-weight: bold;
+             font-family: var(--font-mono);
+             font-size: 0.9em;
+             color: var(--secondary-color);
+         }
+         .filter-bar button {
+             padding: 8px 15px;
+             font-size: 0.9em;
+         }
+
+        /* Shopping List Toggle */
+        .shopping-toggle {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-left: var(--padding-base);
+        }
+         .shopping-toggle input[type="checkbox"] {
+             margin-right: 5px;
+         }
+         .shopping-toggle.active {
+             color: var(--primary-color);
+             font-weight: bold;
+         }
+
+         /* Responsive adjustments */
+         @media (max-width: 768px) {
+             nav button {
+                 display: block;
+                 width: calc(100% - 20px);
+                 margin: 5px 10px;
+                 text-align: left;
+             }
+             .filter-bar {
+                 flex-direction: column;
+                 align-items: stretch;
+             }
+             .filter-bar input[type="text"], .filter-bar select {
+                 max-width: 100%;
+             }
+             .filter-bar label {
+                 margin-bottom: 0;
+             }
+             .button-group {
+                 text-align: center;
+             }
+             .button-group button {
+                 width: auto;
+                 margin: 5px;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Tayyib Tracker</h1>
+        </header>
+
+        <nav>
+            <button data-view="productList" class="active">Products</button>
+            <!-- FIX: Changed data-view from "addProductForm" to "productForm" to match the view div ID -->
+            <button data-view="productForm">Add Product</button>
+            <button data-view="certifierList">Certifiers</button>
+            <button data-view="importExport">Import/Export</button>
+        </nav>
+
+        <main id="content">
+            <!-- Views will be rendered here by JavaScript -->
+
+            <!-- Product List View -->
+            <div id="productList" class="view">
+                <h2>Product Research Log</h2>
+                <div class="filter-bar">
+                    <label for="search-products">Search:</label>
+                    <input type="text" id="search-products" placeholder="Name, ingredients, notes...">
+                    <label for="filter-status">Status:</label>
+                    <select id="filter-status">
+                        <option value="">All Statuses</option>
+                        <option value="Researching">Researching</option>
+                        <option value="Halaal">Halaal</option>
+                        <option value="Mushbooh">Mushbooh</option>
+                        <option value="Haram">Haram</option>
+                        <option value="Tayyib">Tayyib</option>
+                    </select>
+                     <button id="toggle-shopping-list-filter" class="secondary">Show Shopping List</button>
+                </div>
+                <ul id="product-list">
+                    <!-- Product list items will be loaded here -->
+                </ul>
+                 <p id="no-products-message" class="hidden">No products found. Start by adding one!</p>
+            </div>
+
+            <!-- Product Detail View -->
+            <div id="productDetail" class="view hidden">
+                <button class="secondary" onclick="app.showView('productList')">Back to List</button>
+                <div class="button-group">
+                    <button id="edit-product-button" class="secondary">Edit</button>
+                    <button id="delete-product-button" class="danger">Delete</button>
+                </div>
+                <h2 id="detail-product-name"></h2>
+
+                <div class="detail-section">
+                    <h3>Status</h3>
+                    <p class="status-display"><span id="detail-status-indicator" class="status-indicator"></span> <span id="detail-product-status"></span></p>
+                </div>
+
+                 <div class="detail-section">
+                     <h3>Shopping List</h3>
+                     <label class="shopping-toggle" for="detail-shopping-checkbox">
+                         <input type="checkbox" id="detail-shopping-checkbox"> Add to Shopping List
+                     </label>
+                 </div>
+
+                <div class="detail-section">
+                    <h3>Reasoning</h3>
+                    <p id="detail-product-reasoning"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Ingredients / Components</h3>
+                    <p id="detail-product-ingredients"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Manufacturing Process (User Understanding)</h3>
+                    <p id="detail-product-process"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Certifications</h3>
+                    <p id="detail-product-certifications"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Sources of Information</h3>
+                    <p id="detail-product-sources"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Notes</h3>
+                    <p id="detail-product-notes"></p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Images</h3>
+                    <div id="detail-image-gallery" class="image-gallery">
+                        <!-- Images will be loaded here -->
+                    </div>
+                </div>
+
+                 <div class="detail-section">
+                     <h3>Category</h3>
+                     <p id="detail-product-category"></p>
+                 </div>
+
+                 <!-- Simple Related Products (all products in the same category) -->
+                 <div class="detail-section">
+                     <h3>Related Products (Same Category)</h3>
+                     <ul id="related-products-list">
+                         <!-- Related products will be loaded here -->
+                     </ul>
+                      <p id="no-related-products" class="hidden">No other products found in this category.</p>
+                 </div>
+
+            </div>
+
+            <!-- Product Form View -->
+            <div id="productForm" class="view hidden">
+                <h2 id="product-form-title">Add New Product</h2>
+                <form id="product-entry-form">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label for="product-name">Product/Service Name:</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Category (e.g., Food, Cosmetic, Service):</label>
+                        <input type="text" id="product-category">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-ingredients">Ingredients/Components:</label>
+                        <textarea id="product-ingredients"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-process">Manufacturing Process (Your Understanding):</label>
+                        <textarea id="product-process"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-certifications">Certifications (List any found):</label>
+                        <textarea id="product-certifications"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-sources">Sources of Information (Websites, books, contacts):</label>
+                        <textarea id="product-sources"></textarea>
+                    </div>
+                     <div class="form-group">
+                         <label for="product-notes">Additional Notes:</label>
+                         <textarea id="product-notes"></textarea>
+                     </div>
+                    <div class="form-group">
+                        <label>Personal Status:</label>
+                        <div class="status-select-group">
+                             <label><input type="radio" name="product-status" value="Researching" checked> Researching</label>
+                            <label><input type="radio" name="product-status" value="Halaal"> Halaal</label>
+                            <label><input type="radio" name="product-status" value="Mushbooh"> Mushbooh</label>
+                            <label><input type="radio" name="product-status" value="Haram"> Haram</label>
+                            <label><input type="radio" name="product-status" value="Tayyib"> Tayyib</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-reasoning">Reasoning for Status:</label>
+                        <textarea id="product-reasoning" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-images">Attach Images (Product, label, certs):</label>
+                        <input type="file" id="product-images" accept="image/*" multiple>
+                         <div id="image-previews" class="image-gallery"></div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit">Save Product</button>
+                        <button type="button" class="secondary" onclick="app.showView('productList')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Certifier List View -->
+            <div id="certifierList" class="view hidden">
+                <h2>Certifiers & Brands</h2>
+                 <button class="secondary" onclick="app.showView('addCertifierForm')">Add New Certifier/Brand</button>
+                <ul id="certifier-list">
+                    <!-- Certifier list items will be loaded here -->
+                </ul>
+                 <p id="no-certifiers-message" class="hidden">No certifiers or brands added yet.</p>
+            </div>
+
+             <!-- Certifier Form View -->
+            <div id="certifierForm" class="view hidden">
+                <h2 id="certifier-form-title">Add New Certifier/Brand</h2>
+                <form id="certifier-entry-form">
+                    <input type="hidden" id="certifier-id">
+                    <div class="form-group">
+                        <label for="certifier-name">Name:</label>
+                        <input type="text" id="certifier-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="certifier-notes">Notes (e.g., Trusted, Doubtful, Researching):</label>
+                        <textarea id="certifier-notes"></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit">Save Certifier/Brand</button>
+                        <button type="button" class="secondary" onclick="app.showView('certifierList')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Import/Export View -->
+            <div id="importExport" class="view hidden">
+                <h2>Database Management</h2>
+                <div class="action-section">
+                    <h3>Export Data</h3>
+                    <p>Export your entire Tayyib Tracker database (products, certifiers) to a JSON file.</p>
+                    <button id="export-data-button">Export Database</button>
+                </div>
+                <div class="action-section">
+                    <h3>Import Data</h3>
+                    <p>Import data from a previously exported JSON file. <strong>Warning: This will replace your current database!</strong></p>
+                    <input type="file" id="import-file-input" accept=".json">
+                    <button id="import-data-button" disabled>Import Database</button>
+                     <p id="import-status-message"></p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer or other persistent elements could go here -->
+         <!-- <footer>
+             <p>© 2023 Tayyib Tracker by Yasin Ullah</p>
+         </footer> -->
+    </div>
+
+    <script>
+        // Tayyib Tracker - Personal Research Log
+        // Author: Yasin Ullah, Pakistani
+
+        const app = {
+            db: null,
+            dbName: 'tayyibTrackerDBz',
+            dbVersion: 2, // Increment version for schema changes (like adding category, notes, shopping list)
+            currentView: 'productList',
+            currentProductId: null,
+            currentCertifierId: null,
+            allProducts: [], // Cache for product list view
+            allCertifiers: [], // Cache for certifier list view
+            isShoppingListFilterActive: false,
+
+            // --- IndexedDB Operations ---
+            openDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(app.dbName, app.dbVersion);
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains('products')) {
+                            const productStore = db.createObjectStore('products', { keyPath: 'id' });
+                            // Add indexes if needed for searching/filtering later
+                            productStore.createIndex('name', 'name', { unique: false });
+                            productStore.createIndex('status', 'status', { unique: false });
+                             productStore.createIndex('category', 'category', { unique: false });
+                             productStore.createIndex('isShoppingItem', 'isShoppingItem', { unique: false });
+                        }
+                         // Upgrade from v1 to v2: Add certifiers store
+                         if (!db.objectStoreNames.contains('certifiers')) {
+                             const certifierStore = db.createObjectStore('certifiers', { keyPath: 'id' });
+                             certifierStore.createIndex('name', 'name', { unique: false });
+                         }
+                         // Further upgrades (e.g., adding fields to existing stores)
+                         const productStore = request.transaction.objectStore('products');
+                         if (!productStore.indexNames.contains('category')) {
+                             productStore.createIndex('category', 'category', { unique: false });
+                         }
+                          if (!productStore.indexNames.contains('isShoppingItem')) {
+                             productStore.createIndex('isShoppingItem', 'isShoppingItem', { unique: false });
+                         }
+                         // Add notes field if not exists (check if index exists implies field exists)
+                         // No direct way to add field, but subsequent gets/puts will handle missing fields
+                    };
+
+                    request.onsuccess = (event) => {
+                        app.db = event.target.result;
+                        console.log('IndexedDB opened successfully');
+                        resolve(app.db);
+                    };
+
+                    request.onerror = (event) => {
+                        console.error('IndexedDB error:', event.target.errorCode);
+                        reject(event.target.error);
+                    };
+                });
+            },
+
+            async addData(storeName, data) {
+                const tx = app.db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                data.id = data.id || Date.now(); // Simple unique ID
+                return new Promise((resolve, reject) => {
+                    const request = store.add(data);
+                    request.onsuccess = () => resolve(data.id);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            async updateData(storeName, data) {
+                 if (!data.id) return Promise.reject('Data must have an ID to update');
+                const tx = app.db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                return new Promise((resolve, reject) => {
+                    const request = store.put(data);
+                    request.onsuccess = () => resolve(data.id);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            async deleteData(storeName, id) {
+                const tx = app.db.transaction(storeName, 'readwrite');
+                const store = tx.objectStore(storeName);
+                return new Promise((resolve, reject) => {
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve(id);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            async getData(storeName, id) {
+                const tx = app.db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                return new Promise((resolve, reject) => {
+                    const request = store.get(id);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            async getAllData(storeName, index = null, range = null) {
+                const tx = app.db.transaction(storeName, 'readonly');
+                const store = tx.objectStore(storeName);
+                const source = index ? store.index(index) : store;
+                return new Promise((resolve, reject) => {
+                    const request = range ? source.getAll(range) : source.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+            },
+
+            // --- UI Rendering ---
+            showView(viewId, data) {
+                // Hide all views
+                document.querySelectorAll('.view').forEach(view => view.classList.add('hidden'));
+                // Show the requested view
+                //alert(document.getElementById(viewId));
+                document.getElementById(viewId).classList.remove('hidden');
+                // Update active navigation button
+                document.querySelectorAll('nav button').forEach(button => {
+                    if (button.dataset.view === viewId) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+                app.currentView = viewId;
+
+                // Perform view-specific actions
+                if (viewId === 'productList') {
+                    app.loadProductList();
+                } else if (viewId === 'addProductForm') {
+                    app.renderProductForm(); // Render empty form for add
+                } else if (viewId === 'productDetail' && data && data.id) {
+                    app.loadProductDetail(data.id);
+                } else if (viewId === 'productForm' && data && data.id) {
+                     app.loadProductForm(data.id); // Load data for edit
+                } else if (viewId === 'certifierList') {
+                    app.loadCertifierList();
+                } else if (viewId === 'addCertifierForm') {
+                     app.renderCertifierForm(); // Render empty form for add
+                } else if (viewId === 'certifierForm' && data && data.id) {
+                     app.loadCertifierForm(data.id); // Load data for edit
+                } else if (viewId === 'importExport') {
+                    app.renderImportExport();
+                }
+            },
+
+            async loadProductList() {
+                app.allProducts = await app.getAllData('products');
+                app.renderProductList(app.allProducts);
+            },
+
+            renderProductList(productsToRender) {
+                const listElement = document.getElementById('product-list');
+                listElement.innerHTML = ''; // Clear current list
+
+                if (productsToRender.length === 0) {
+                     document.getElementById('no-products-message').classList.remove('hidden');
+                     return;
+                } else {
+                     document.getElementById('no-products-message').classList.add('hidden');
+                }
+
+
+                productsToRender.forEach(product => {
+                    const listItem = document.createElement('li');
+                    listItem.dataset.productId = product.id;
+                    listItem.innerHTML = `
+                        <div class="product-info">
+                            <h3>${product.name || 'Unnamed Product'}</h3>
+                            <p>${product.category ? product.category + ' | ' : ''}Status: ${product.status || 'Researching'}</p>
+                        </div>
+                        <span class="status-indicator status-${product.status || 'Researching'}"></span>
+                         ${product.isShoppingItem ? '<span style="margin-left: 10px; color: var(--primary-color); font-weight: bold;">🛒</span>' : ''}
+                    `;
+                    listItem.addEventListener('click', (e) => {
+                         // Prevent click on shopping icon from opening detail
+                         if (e.target.tagName === 'SPAN' && e.target.innerText.includes('🛒')) return;
+                        app.showView('productDetail', { id: product.id });
+                    });
+                    listElement.appendChild(listItem);
+                });
+            },
+
+            async loadProductDetail(id) {
+                const product = await app.getData('products', id);
+                if (!product) {
+                    alert('Product not found.');
+                    app.showView('productList');
+                    return;
+                }
+                app.currentProductId = id;
+
+                document.getElementById('detail-product-name').innerText = product.name || 'Unnamed Product';
+                document.getElementById('detail-product-status').innerText = product.status || 'Researching';
+                document.getElementById('detail-status-indicator').className = `status-indicator status-${product.status || 'Researching'}`;
+                document.getElementById('detail-product-reasoning').innerText = product.reasoning || 'No reasoning provided.';
+                document.getElementById('detail-product-ingredients').innerText = product.ingredients || 'Not specified.';
+                document.getElementById('detail-product-process').innerText = product.process || 'Not specified.';
+                document.getElementById('detail-product-certifications').innerText = product.certifications || 'None listed.';
+                document.getElementById('detail-product-sources').innerText = product.sources || 'Not specified.';
+                 document.getElementById('detail-product-notes').innerText = product.notes || 'No additional notes.';
+                 document.getElementById('detail-product-category').innerText = product.category || 'Not specified.';
+
+                 // Shopping list checkbox
+                 const shoppingCheckbox = document.getElementById('detail-shopping-checkbox');
+                 shoppingCheckbox.checked = product.isShoppingItem || false;
+                 shoppingCheckbox.onchange = async (e) => {
+                     product.isShoppingItem = e.target.checked;
+                     await app.updateData('products', product);
+                     console.log(`Product ${product.id} shopping status updated to ${product.isShoppingItem}`);
+                     // No need to re-render detail, just update the flag in DB
+                 };
+
+
+                // Images
+                const imageGallery = document.getElementById('detail-image-gallery');
+                imageGallery.innerHTML = '';
+                if (product.images && product.images.length > 0) {
+                    product.images.forEach(imageDataUrl => {
+                        const img = document.createElement('img');
+                        img.src = imageDataUrl;
+                        img.alt = product.name + ' image';
+                        imageGallery.appendChild(img);
+                    });
+                } else {
+                    imageGallery.innerHTML = '<p>No images attached.</p>';
+                }
+
+                 // Related Products (simple: list all in the same category)
+                 const relatedList = document.getElementById('related-products-list');
+                 relatedList.innerHTML = '';
+                 const relatedProducts = app.allProducts.filter(p =>
+                     p.category === product.category && p.id !== product.id
+                 );
+
+                 if (relatedProducts.length > 0) {
+                      document.getElementById('no-related-products').classList.add('hidden');
+                     relatedProducts.forEach(relatedP => {
+                         const li = document.createElement('li');
+                         li.innerHTML = `<a href="#" data-product-id="${relatedP.id}">${relatedP.name || 'Unnamed Product'} <span class="status-indicator status-${relatedP.status || 'Researching'}" style="display: inline-block; vertical-align: middle; margin-left: 5px;"></span></a>`;
+                         li.querySelector('a').addEventListener('click', (e) => {
+                              e.preventDefault();
+                              app.showView('productDetail', { id: relatedP.id });
+                         });
+                         relatedList.appendChild(li);
+                     });
+                 } else {
+                     document.getElementById('no-related-products').classList.remove('hidden');
+                 }
+
+
+                // Set up edit/delete buttons
+                document.getElementById('edit-product-button').onclick = () => app.showView('productForm', { id: product.id });
+                document.getElementById('delete-product-button').onclick = async () => {
+                    if (confirm(`Are you sure you want to delete "${product.name || 'this product'}"?`)) {
+                        await app.deleteData('products', product.id);
+                        app.showView('productList'); // Go back to list after deletion
+                    }
+                };
+            },
+
+            async loadProductForm(id) {
+                 const product = await app.getData('products', id);
+                 if (!product) {
+                     alert('Product not found for editing.');
+                     app.showView('productList');
+                     return;
+                 }
+                 document.getElementById('product-form-title').innerText = 'Edit Product';
+                 document.getElementById('product-id').value = product.id;
+                 document.getElementById('product-name').value = product.name || '';
+                 document.getElementById('product-category').value = product.category || '';
+                 document.getElementById('product-ingredients').value = product.ingredients || '';
+                 document.getElementById('product-process').value = product.process || '';
+                 document.getElementById('product-certifications').value = product.certifications || '';
+                 document.getElementById('product-sources').value = product.sources || '';
+                 document.getElementById('product-notes').value = product.notes || '';
+                 document.getElementById('product-reasoning').value = product.reasoning || '';
+
+                 // Set status radio button
+                 const statusRadios = document.querySelectorAll('input[name="product-status"]');
+                 statusRadios.forEach(radio => {
+                     if (radio.value === (product.status || 'Researching')) {
+                         radio.checked = true;
+                     }
+                 });
+
+                 // Display image previews
+                 const imagePreviews = document.getElementById('image-previews');
+                 imagePreviews.innerHTML = '';
+                 if (product.images && product.images.length > 0) {
+                     product.images.forEach((imageDataUrl, index) => {
+                         const imgContainer = document.createElement('div');
+                         imgContainer.style.position = 'relative';
+                         imgContainer.style.display = 'inline-block';
+                         const img = document.createElement('img');
+                         img.src = imageDataUrl;
+                         img.style.maxWidth = '100px';
+                         img.style.height = 'auto';
+                         img.style.margin = '5px';
+                         img.style.border = '1px solid var(--border-color)';
+                         img.style.borderRadius = "var('--border-radius-base')";
+
+                         const removeBtn = document.createElement('button');
+                         removeBtn.innerText = 'X';
+                         removeBtn.style.position = 'absolute';
+                         removeBtn.style.top = '0';
+                         removeBtn.style.right = '0';
+                         removeBtn.style.background = 'rgba(220, 53, 69, 0.8)';
+                         removeBtn.style.color = 'white';
+                         removeBtn.style.border = 'none';
+                         removeBtn.style.borderRadius = '50%';
+                         removeBtn.style.width = '20px';
+                         removeBtn.style.height = '20px';
+                         removeBtn.style.padding = '0';
+                         removeBtn.style.fontSize = '0.8em';
+                         removeBtn.style.cursor = 'pointer';
+                         removeBtn.onclick = (e) => {
+                              e.preventDefault(); // Prevent form submission
+                              // Mark image for removal (or rebuild array without it)
+                              // Simplest for single file: just remove from preview.
+                              // On save, the form will need to handle original images + new + removed.
+                              // Let's store images temporarily on the form object or similar.
+                              // A better way: store images as an array of objects { dataUrl, keep: true/false }
+                              if (!document.getElementById('product-entry-form').dataset.imagesToRemove) {
+                                  document.getElementById('product-entry-form').dataset.imagesToRemove = '';
+                              }
+                              document.getElementById('product-entry-form').dataset.imagesToRemove += index + ','; // Store index to remove
+                              imgContainer.remove();
+                         };
+                         imgContainer.appendChild(img);
+                         imgContainer.appendChild(removeBtn);
+                         imagePreviews.appendChild(imgContainer);
+                     });
+                      // Store current images data URLs temporarily
+                     document.getElementById('product-entry-form').dataset.currentImages = JSON.stringify(product.images || []);
+                     document.getElementById('product-entry-form').dataset.imagesToRemove = ''; // Reset removal list
+                 }
+            },
+
+            renderProductForm() {
+                 document.getElementById('product-form-title').innerText = 'Add New Product';
+                 document.getElementById('product-entry-form').reset();
+                 document.getElementById('product-id').value = ''; // Clear ID for new entry
+                 document.getElementById('image-previews').innerHTML = ''; // Clear image previews
+                 document.getElementById('product-entry-form').dataset.currentImages = '[]'; // No current images for new form
+                 document.getElementById('product-entry-form').dataset.imagesToRemove = ''; // No images to remove
+                 // Set default status
+                 document.querySelector('input[name="product-status"][value="Researching"]').checked = true;
+            },
+
+            async loadCertifierList() {
+                app.allCertifiers = await app.getAllData('certifiers');
+                app.renderCertifierList(app.allCertifiers);
+            },
+
+            renderCertifierList(certifiersToRender) {
+                const listElement = document.getElementById('certifier-list');
+                listElement.innerHTML = ''; // Clear current list
+
+                 if (certifiersToRender.length === 0) {
+                     document.getElementById('no-certifiers-message').classList.remove('hidden');
+                     return;
+                 } else {
+                      document.getElementById('no-certifiers-message').classList.add('hidden');
+                 }
+
+
+                certifiersToRender.forEach(certifier => {
+                    const listItem = document.createElement('li');
+                    listItem.dataset.certifierId = certifier.id;
+                    listItem.innerHTML = `
+                        <div class="certifier-info">
+                            <h3>${certifier.name || 'Unnamed Certifier'}</h3>
+                            <p>${certifier.notes || 'No notes.'}</p>
+                        </div>
+                    `;
+                    listItem.addEventListener('click', () => app.showView('certifierForm', { id: certifier.id })); // Use form for detail/edit
+                    listElement.appendChild(listItem);
+                });
+            },
+
+            async loadCertifierForm(id) {
+                 const certifier = await app.getData('certifiers', id);
+                 if (!certifier) {
+                     alert('Certifier not found for editing.');
+                     app.showView('certifierList');
+                     return;
+                 }
+                 document.getElementById('certifier-form-title').innerText = 'Edit Certifier/Brand';
+                 document.getElementById('certifier-id').value = certifier.id;
+                 document.getElementById('certifier-name').value = certifier.name || '';
+                 document.getElementById('certifier-notes').value = certifier.notes || '';
+            },
+
+            renderCertifierForm() {
+                 document.getElementById('certifier-form-title').innerText = 'Add New Certifier/Brand';
+                 document.getElementById('certifier-entry-form').reset();
+                 document.getElementById('certifier-id').value = ''; // Clear ID for new entry
+            },
+
+
+            renderImportExport() {
+                 // No dynamic rendering needed for this static view layout
+                 document.getElementById('import-status-message').innerText = '';
+                 document.getElementById('import-file-input').value = ''; // Clear file input
+                 document.getElementById('import-data-button').disabled = true;
+            },
+
+
+            // --- Event Handlers ---
+            handleProductFormSubmit(event) {
+                event.preventDefault();
+
+                const form = event.target;
+                const id = form.elements['product-id'].value ? parseInt(form.elements['product-id'].value, 10) : null;
+                const name = form.elements['product-name'].value.trim();
+                 const category = form.elements['product-category'].value.trim();
+                const ingredients = form.elements['product-ingredients'].value.trim();
+                const process = form.elements['product-process'].value.trim();
+                const certifications = form.elements['product-certifications'].value.trim();
+                const sources = form.elements['product-sources'].value.trim();
+                 const notes = form.elements['product-notes'].value.trim();
+                const status = form.elements['product-status'].value;
+                const reasoning = form.elements['product-reasoning'].value.trim();
+
+                if (!name || !reasoning) {
+                    alert('Product Name and Reasoning are required.');
+                    return;
+                }
+
+                 // Handle images: combine existing (not marked for removal) with new ones
+                 const currentImages = JSON.parse(form.dataset.currentImages || '[]');
+                 const imagesToRemoveIndices = (form.dataset.imagesToRemove || '').split(',').filter(Boolean).map(Number);
+                 const keptImages = currentImages.filter((img, index) => !imagesToRemoveIndices.includes(index));
+
+                 const newImages = Array.from(form.elements['product-images'].files);
+                 const imagePromises = newImages.map(file => {
+                     return new Promise((resolve, reject) => {
+                         const reader = new FileReader();
+                         reader.onloadend = () => resolve(reader.result); // Data URL
+                         reader.onerror = reject;
+                         reader.readAsDataURL(file); // Read file as Data URL
+                     });
+                 });
+
+                Promise.all(imagePromises).then(async newImageDataUrls => {
+                    const allImages = keptImages.concat(newImageDataUrls);
+
+                    const productData = {
+                        id: id, // Will be null for new entries, IndexedDB handles key generation if not provided
+                        name: name,
+                         category: category,
+                        ingredients: ingredients,
+                        process: process,
+                        certifications: certifications,
+                        sources: sources,
+                         notes: notes,
+                        status: status,
+                        reasoning: reasoning,
+                        images: allImages,
+                         isShoppingItem: id ? (await app.getData('products', id)).isShoppingItem : false // Keep existing shopping status or default false
+                    };
+
+                    try {
+                        if (id) {
+                            await app.updateData('products', productData);
+                            console.log('Product updated:', productData);
+                        } else {
+                            const newId = await app.addData('products', productData);
+                             productData.id = newId; // Set the generated ID
+                            console.log('Product added:', productData);
+                        }
+                        app.showView('productList'); // Go back to list
+                    } catch (error) {
+                        console.error('Error saving product:', error);
+                        alert('Failed to save product.');
+                    }
+                }).catch(error => {
+                     console.error('Error reading image files:', error);
+                     alert('Failed to read image files.');
+                });
+            },
+
+             handleCertifierFormSubmit(event) {
+                 event.preventDefault();
+
+                 const form = event.target;
+                 const id = form.elements['certifier-id'].value ? parseInt(form.elements['certifier-id'].value, 10) : null;
+                 const name = form.elements['certifier-name'].value.trim();
+                 const notes = form.elements['certifier-notes'].value.trim();
+
+                 if (!name) {
+                     alert('Certifier/Brand Name is required.');
+                     return;
+                 }
+
+                 const certifierData = {
+                     id: id,
+                     name: name,
+                     notes: notes
+                 };
+
+                 try {
+                     if (id) {
+                         app.updateData('certifiers', certifierData).then(() => {
+                              console.log('Certifier updated:', certifierData);
+                              app.showView('certifierList');
+                         });
+                     } else {
+                         app.addData('certifiers', certifierData).then(() => {
+                              console.log('Certifier added:', certifierData);
+                              app.showView('certifierList');
+                         });
+                     }
+                 } catch (error) {
+                     console.error('Error saving certifier:', error);
+                     alert('Failed to save certifier/brand.');
+                 }
+             },
+
+            handleImageFileInput(event) {
+                 const files = event.target.files;
+                 const previewContainer = document.getElementById('image-previews');
+                 // If editing, preserve existing previews and add new ones
+                 if (!document.getElementById('product-id').value) { // Only clear if adding new product
+                     previewContainer.innerHTML = '';
+                 }
+
+
+                 for (const file of files) {
+                     if (!file.type.startsWith('image/')) continue;
+
+                     const reader = new FileReader();
+                     reader.onload = (e) => {
+                         const imgContainer = document.createElement('div');
+                         imgContainer.style.position = 'relative';
+                         imgContainer.style.display = 'inline-block';
+
+                         const img = document.createElement('img');
+                         img.src = e.target.result;
+                         img.style.maxWidth = '100px';
+                         img.style.height = 'auto';
+                         img.style.margin = '5px';
+                         img.style.border = '1px solid var(--border-color)';
+                         img.style.borderRadius = "var('--border-radius-base')";
+
+                         const removeBtn = document.createElement('button');
+                         removeBtn.innerText = 'X';
+                         removeBtn.style.position = 'absolute';
+                         removeBtn.style.top = '0';
+                         removeBtn.style.right = '0';
+                         removeBtn.style.background = 'rgba(220, 53, 69, 0.8)';
+                         removeBtn.style.color = 'white';
+                         removeBtn.style.border = 'none';
+                         removeBtn.style.borderRadius = '50%';
+                         removeBtn.style.width = '20px';
+                         removeBtn.style.height = '20px';
+                         removeBtn.style.padding = '0';
+                         removeBtn.style.fontSize = '0.8em';
+                         removeBtn.style.cursor = 'pointer';
+                         removeBtn.onclick = (e) => {
+                              e.preventDefault(); // Prevent form submission
+                              // For new images, just remove the preview and the file from the input's file list (complex)
+                              // Simpler approach: just remove the preview. When saving, read files from input *and* keep non-removed existing ones.
+                              // The current logic in handleProductFormSubmit handles this by combining kept existing images with new files.
+                              // This preview removal needs to signal which *new* files are removed before submission.
+                              // Let's keep it simple: removing from preview only works for *existing* images when editing. For new images, the user must re-select.
+                              // Or, modify the file input's FileList (not possible directly).
+                              // Alternative: store new files in a JS array and update that when removing previews.
+                              // Let's use a temporary array for new files associated with the form.
+                              const form = document.getElementById('product-entry-form');
+                              if (!form._newFiles) form._newFiles = [];
+                              // Find the index of this file in the original FileList or our temp array?
+                              // This is getting complicated for a single file. Let's simplify:
+                              // 1. When editing, previews show existing images + new images selected.
+                              // 2. 'X' only works for existing images (marks them for removal via dataset).
+                              // 3. New images added via file input are processed on submit. If user removes preview of a NEW image, they must re-select it if they change their mind.
+                              // This preview removal logic should only apply if the form has a product-id (editing mode).
+                               if (document.getElementById('product-id').value) {
+                                   // This is an existing image removal, handled in handleProductFormSubmit
+                                   const imageIndex = Array.from(previewContainer.children).indexOf(imgContainer); // This index is relative to the current previews, not original images
+                                   // Need a better way to map preview to original image index or data URL.
+                                   // Let's store data URL on the container and match it on submit.
+                                   if (!form.dataset.imagesToRemoveDataUrls) form.dataset.imagesToRemoveDataUrls = '';
+                                   form.dataset.imagesToRemoveDataUrls += img.src + ',';
+                                   imgContainer.remove();
+                               } else {
+                                   // This is a new image preview removal. Just remove the preview. User has to re-select if needed.
+                                   imgContainer.remove();
+                               }
+                         };
+
+                         imgContainer.appendChild(img);
+                         if (document.getElementById('product-id').value) { // Only add remove button for existing images when editing
+                            imgContainer.appendChild(removeBtn);
+                         }
+                         previewContainer.appendChild(imgContainer);
+                     };
+                     reader.readAsDataURL(file); // Read file as Data URL
+                 }
+            },
+
+            handleProductSearchAndFilter() {
+                 const searchTerm = document.getElementById('search-products').value.toLowerCase();
+                 const filterStatus = document.getElementById('filter-status').value;
+                 const filterShopping = app.isShoppingListFilterActive; // Use the global flag
+
+                 const filteredProducts = app.allProducts.filter(product => {
+                     const matchesSearch = searchTerm === '' ||
+                                           (product.name && product.name.toLowerCase().includes(searchTerm)) ||
+                                           (product.ingredients && product.ingredients.toLowerCase().includes(searchTerm)) ||
+                                           (product.notes && product.notes.toLowerCase().includes(searchTerm)) ||
+                                            (product.category && product.category.toLowerCase().includes(searchTerm)) ||
+                                           (product.certifications && product.certifications.toLowerCase().includes(searchTerm));
+
+                     const matchesStatus = filterStatus === '' || (product.status || 'Researching') === filterStatus;
+
+                     const matchesShopping = !filterShopping || (product.isShoppingItem === true);
+
+                     return matchesSearch && matchesStatus && matchesShopping;
+                 });
+
+                 app.renderProductList(filteredProducts);
+            },
+
+             handleShoppingListToggleFilter() {
+                 app.isShoppingListFilterActive = !app.isShoppingListFilterActive;
+                 const button = document.getElementById('toggle-shopping-list-filter');
+                 if (app.isShoppingListFilterActive) {
+                     button.classList.add('active');
+                     button.innerText = 'Hide Shopping List';
+                 } else {
+                     button.classList.remove('active');
+                     button.innerText = 'Show Shopping List';
+                 }
+                 app.handleProductSearchAndFilter(); // Re-apply filters
+             },
+
+             // --- Import/Export ---
+             async exportData() {
+                 try {
+                     const products = await app.getAllData('products');
+                     const certifiers = await app.getAllData('certifiers');
+                     const data = {
+                         version: app.dbVersion,
+                         timestamp: Date.now(),
+                         products: products,
+                         certifiers: certifiers
+                     };
+
+                     const jsonString = JSON.stringify(data, null, 2);
+                     const blob = new Blob([jsonString], { type: 'application/json' });
+                     const url = URL.createObjectURL(blob);
+
+                     const a = document.createElement('a');
+                     a.href = url;
+                     a.download = `tayyib_tracker_backup_${new Date().toISOString().split('T')[0]}.json`;
+                     document.body.appendChild(a);
+                     a.click();
+                     document.body.removeChild(a);
+                     URL.revokeObjectURL(url);
+                     console.log('Database exported successfully.');
+
+                 } catch (error) {
+                     console.error('Error exporting database:', error);
+                     alert('Failed to export database.');
+                 }
+             },
+
+             async importData(file) {
+                 const statusMessage = document.getElementById('import-status-message');
+                 statusMessage.innerText = 'Reading file...';
+
+                 const reader = new FileReader();
+                 reader.onload = async (event) => {
+                     try {
+                         const data = JSON.parse(event.target.result);
+
+                         if (!data || !Array.isArray(data.products) || !Array.isArray(data.certifiers)) {
+                             throw new Error('Invalid file format.');
+                         }
+
+                         // Optional: Check version compatibility
+                         if (data.version && data.version > app.dbVersion) {
+                              console.warn(`Import file version (${data.version}) is newer than app version (${app.dbVersion}). Data might not be fully compatible.`);
+                             // Could add migration logic here if needed in the future
+                         }
+
+                         statusMessage.innerText = 'Importing data... This will erase current data.';
+                         if (!confirm('Importing will REPLACE your current data. Are you sure?')) {
+                              statusMessage.innerText = 'Import cancelled.';
+                              return;
+                         }
+
+                         // Clear existing data
+                         const clearProductsTx = app.db.transaction('products', 'readwrite');
+                         await clearProductsTx.objectStore('products').clear();
+                         await new Promise(resolve => clearProductsTx.oncomplete = resolve);
+
+                         const clearCertifiersTx = app.db.transaction('certifiers', 'readwrite');
+                         await clearCertifiersTx.objectStore('certifiers').clear();
+                         await new Promise(resolve => clearCertifiersTx.oncomplete = resolve);
+
+                         statusMessage.innerText = 'Adding new data...';
+
+                         // Add imported data
+                         const importTx = app.db.transaction(['products', 'certifiers'], 'readwrite');
+                         const productStore = importTx.objectStore('products');
+                         const certifierStore = importTx.objectStore('certifiers');
+
+                         for (const product of data.products) {
+                             // Ensure IDs are handled correctly (use existing ID from import)
+                             await new Promise((resolve, reject) => {
+                                 const req = productStore.add(product);
+                                 req.onsuccess = resolve;
+                                 req.onerror = (e) => {
+                                     console.warn('Skipping product on import due to error (likely duplicate ID):', product.id, e.target.error);
+                                     resolve(); // Don't stop the whole import on one error
+                                 };
+                             });
+                         }
+
+                         for (const certifier of data.certifiers) {
+                             await new Promise((resolve, reject) => {
+                                 const req = certifierStore.add(certifier);
+                                 req.onsuccess = resolve;
+                                 req.onerror = (e) => {
+                                     console.warn('Skipping certifier on import due to error (likely duplicate ID):', certifier.id, e.target.error);
+                                     resolve(); // Don't stop the whole import on one error
+                                 };
+                             });
+                         }
+
+                         await new Promise(resolve => importTx.oncomplete = resolve);
+
+                         statusMessage.innerText = 'Import successful!';
+                         console.log('Database imported successfully.');
+                         // Reload the product list view
+                         app.showView('productList');
+
+                     } catch (error) {
+                         console.error('Error importing database:', error);
+                         statusMessage.innerText = `Import failed: ${error.message}`;
+                         alert(`Failed to import database: ${error.message}`);
+                     } finally {
+                          document.getElementById('import-file-input').value = ''; // Clear file input
+                          document.getElementById('import-data-button').disabled = true;
+                     }
+                 };
+                 reader.onerror = (error) => {
+                     console.error('Error reading file:', error);
+                     statusMessage.innerText = 'Error reading file.';
+                     alert('Error reading file.');
+                 };
+                 reader.readAsText(file);
+             },
+
+            // --- Initialization ---
+            async init() {
+                try {
+                    await app.openDB();
+                    console.log('Database initialized.');
+
+                    // Set up navigation
+                    document.querySelectorAll('nav button').forEach(button => {
+                        button.addEventListener('click', () => app.showView(button.dataset.view));
+                    });
+
+                    // Set up Product Form submit listener
+                    document.getElementById('product-entry-form').addEventListener('submit', app.handleProductFormSubmit);
+
+                    // Set up Certifier Form submit listener
+                    document.getElementById('certifier-entry-form').addEventListener('submit', app.handleCertifierFormSubmit);
+
+                     // Set up Image file input listener
+                     document.getElementById('product-images').addEventListener('change', app.handleImageFileInput);
+
+                     // Set up search and filter listeners
+                     document.getElementById('search-products').addEventListener('input', app.handleProductSearchAndFilter);
+                     document.getElementById('filter-status').addEventListener('change', app.handleProductSearchAndFilter);
+                     document.getElementById('toggle-shopping-list-filter').addEventListener('click', app.handleShoppingListToggleFilter);
+
+
+                     // Set up Import/Export listeners
+                     document.getElementById('export-data-button').addEventListener('click', app.exportData);
+                     const importFileInput = document.getElementById('import-file-input');
+                     const importButton = document.getElementById('import-data-button');
+                     importFileInput.addEventListener('change', (event) => {
+                          // Enable import button only if a file is selected
+                          importButton.disabled = !event.target.files || event.target.files.length === 0;
+                     });
+                     importButton.addEventListener('click', () => {
+                          const file = importFileInput.files[0];
+                          if (file) {
+                              app.importData(file);
+                          } else {
+                              alert('Please select a JSON file to import.');
+                          }
+                     });
+
+
+                    // Show the initial view (Product List)
+                    app.showView('productList');
+
+                } catch (error) {
+                    console.error('App initialization failed:', error);
+                    document.getElementById('content').innerHTML = '<p style="color: red;">Error initializing the application. Please check console for details.</p>';
+                }
+            }
+        };
+
+        // Initialize the app when the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,2778 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tayyib Tracker</title>
+    <style>
+        :root {
+            --primary: #00a86b;
+            --secondary: #4a90e2;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #2ecc71;
+            --neutral: #95a5a6;
+            --dark: #2c3e50;
+            --light: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--dark);
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-links button:hover {
+            background-color: rgba(0, 168, 107, 0.1);
+            color: var(--primary);
+        }
+        
+        .nav-links button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        main {
+            padding: 20px 0;
+        }
+        
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: none;
+            border: 1px solid var(--neutral);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-halal {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+        
+        .status-mushbooh {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-haram {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .status-tayyib {
+            background-color: rgba(0, 168, 107, 0.1);
+            color: var(--primary);
+        }
+        
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-image {
+            height: 180px;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-btn {
+            background: none;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .image-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        .image-item .remove {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        
+        .shopping-list {
+            list-style: none;
+        }
+        
+        .shopping-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .shopping-item:last-child {
+            border-bottom: none;
+        }
+        
+        .shopping-item-status {
+            margin-right: 10px;
+        }
+        
+        .shopping-item-name {
+            flex: 1;
+        }
+        
+        .certifier-list {
+            list-style: none;
+        }
+        
+        .certifier-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .offline-indicator {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: none;
+            align-items: center;
+        }
+        
+        .offline-indicator i {
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .product-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+        }
+        
+        .mobile-menu {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div id="offlineIndicator" class="offline-indicator">
+<i class="fas fa-wifi-slash"></i> You're currently offline
+</div>
+
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-leaf"></i> Tayyib Tracker
+            </div>
+            <div class="nav-links">
+                <button id="dashboardBtn" class="active"><i class="fas fa-home"></i> Dashboard</button>
+                <button id="productsBtn"><i class="fas fa-box"></i> Products</button>
+                <button id="shoppingBtn"><i class="fas fa-shopping-cart"></i> Shopping List</button>
+                <button id="certifiersBtn"><i class="fas fa-certificate"></i> Certifiers</button>
+                <button id="settingsBtn"><i class="fas fa-cog"></i> Settings</button>
+            </div>
+            <button class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+    
+    <main class="container">
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="view active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Welcome to Tayyib Tracker</h2>
+                </div>
+                <p>Track and research the Halaal/Tayyib status of products based on your own investigation.</p>
+                <div style="margin-top: 15px;">
+                    <button id="addProductBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Product
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Products</h2>
+                    <button id="viewAllProductsBtn" class="btn btn-outline">View All</button>
+                </div>
+                <div id="recentProductsList" class="product-list">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Shopping List</h2>
+                    <button id="viewShoppingListBtn" class="btn btn-outline">View All</button>
+                </div>
+                <ul id="dashboardShoppingList" class="shopping-list">
+                    <!-- Shopping list items will be loaded here -->
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Products View -->
+        <div id="productsView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Products Database</h2>
+                    <button id="addProductBtn2" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New Product
+                    </button>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="productSearch" placeholder="Search products...">
+                    <button id="searchBtn" class="btn btn-secondary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="halal">Halal</button>
+                    <button class="filter-btn" data-filter="mushbooh">Mushbooh</button>
+                    <button class="filter-btn" data-filter="haram">Haram</button>
+                    <button class="filter-btn" data-filter="tayyib">Tayyib</button>
+                </div>
+                
+                <div id="productsList" class="product-list">
+                    <!-- Products will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Detail View -->
+        <div id="productDetailView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="productDetailTitle" class="card-title">Product Detail</h2>
+                    <div>
+                        <button id="editProductBtn" class="btn btn-secondary">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button id="backToProductsBtn" class="btn btn-outline">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="productDetailContent">
+                    <!-- Product detail content will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Similar Products</h2>
+                </div>
+                <div id="similarProductsList" class="product-list">
+                    <!-- Similar products will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add/Edit Product View -->
+        <div id="addEditProductView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="addEditTitle" class="card-title">Add New Product</h2>
+                    <button id="cancelAddEditBtn" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+                
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-group">
+                        <label for="productName">Product Name*</label>
+                        <input type="text" id="productName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="brandName">Brand Name</label>
+                        <input type="text" id="brandName">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <input type="text" id="category">
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="ingredients">Ingredients & Components</div>
+                        <div class="tab" data-tab="process">Manufacturing Process</div>
+                        <div class="tab" data-tab="certifications">Certifications</div>
+                        <div class="tab" data-tab="sources">Information Sources</div>
+                        <div class="tab" data-tab="status">Status & Reasoning</div>
+                        <div class="tab" data-tab="images">Images</div>
+                    </div>
+                    
+                    <div id="ingredientsTab" class="tab-content active">
+                        <div class="form-group">
+                            <label for="ingredients">Ingredients & Components</label>
+                            <textarea id="ingredients" placeholder="List all ingredients and components..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="concernIngredients">Ingredients of Concern</label>
+                            <textarea id="concernIngredients" placeholder="Highlight any ingredients that raise concerns..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="processTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="manufacturingProcess">Manufacturing Process</label>
+                            <textarea id="manufacturingProcess" placeholder="Describe the manufacturing process as you understand it..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="certificationsTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="certifications">Certifications</label>
+                            <textarea id="certifications" placeholder="List any halal/kosher/organic certifications..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="certifierName">Certifier Name</label>
+                            <input type="text" id="certifierName">
+                        </div>
+                    </div>
+                    
+                    <div id="sourcesTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="informationSources">Information Sources</label>
+                            <textarea id="informationSources" placeholder="List all sources used for your research (websites, emails, calls, etc.)..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="statusTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="status">Status*</label>
+                            <select id="status" required>
+                                <option value="">Select status...</option>
+                                <option value="halal">Halal</option>
+                                <option value="mushbooh">Mushbooh (Doubtful)</option>
+                                <option value="haram">Haram</option>
+                                <option value="tayyib">Tayyib</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="statusReasoning">Reasoning for Status*</label>
+                            <textarea id="statusReasoning" placeholder="Explain your reasoning for this status determination..." required></textarea>
+                        </div>
+                    </div>
+                    
+                    <div id="imagesTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="productImages">Product Images</label>
+                            <input type="file" id="productImages" multiple accept="image/*">
+                        </div>
+                        
+                        <div id="imagePreview" class="image-preview">
+                            <!-- Image previews will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addToShoppingList">
+                            <input type="checkbox" id="addToShoppingList"> Add to Shopping List
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Shopping List View -->
+        <div id="shoppingListView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Shopping List</h2>
+                    <button id="clearShoppingListBtn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear List
+                    </button>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="shoppingSearch" placeholder="Search shopping list...">
+                    <button id="searchShoppingBtn" class="btn btn-secondary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <ul id="shoppingList" class="shopping-list">
+                    <!-- Shopping list items will be loaded here -->
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Certifiers View -->
+        <div id="certifiersView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Halal Certifiers</h2>
+                    <button id="addCertifierBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Certifier
+                    </button>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="trusted">Trusted</div>
+                    <div class="tab" data-tab="doubtful">Doubtful</div>
+                    <div class="tab" data-tab="all">All</div>
+                </div>
+                
+                <div id="trustedTab" class="tab-content active">
+                    <ul id="trustedCertifiersList" class="certifier-list">
+                        <!-- Trusted certifiers will be loaded here -->
+                    </ul>
+                </div>
+                
+                <div id="doubtfulTab" class="tab-content">
+                    <ul id="doubtfulCertifiersList" class="certifier-list">
+                        <!-- Doubtful certifiers will be loaded here -->
+                    </ul>
+                </div>
+                
+                <div id="allCertifiersTab" class="tab-content">
+                    <ul id="allCertifiersList" class="certifier-list">
+                        <!-- All certifiers will be loaded here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add/Edit Certifier View -->
+        <div id="addEditCertifierView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="addEditCertifierTitle" class="card-title">Add Certifier</h2>
+                    <button id="cancelAddEditCertifierBtn" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+                
+                <form id="certifierForm">
+                    <input type="hidden" id="certifierId">
+                    
+                    <div class="form-group">
+                        <label for="certifierNameInput">Certifier Name*</label>
+                        <input type="text" id="certifierNameInput" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certifierStatus">Status*</label>
+                        <select id="certifierStatus" required>
+                            <option value="">Select status...</option>
+                            <option value="trusted">Trusted</option>
+                            <option value="doubtful">Doubtful</option>
+                            <option value="neutral">Neutral</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certifierNotes">Notes & Research</label>
+                        <textarea id="certifierNotes" placeholder="Add your research and reasoning for trusting/doubting this certifier..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certifierWebsite">Website</label>
+                        <input type="url" id="certifierWebsite">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Save Certifier</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Settings View -->
+        <div id="settingsView" class="view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Settings</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label for="exportData">Export Database</label>
+                    <button id="exportDataBtn" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <p class="help-text">Export all your product research data as a JSON file.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="importData">Import Database</label>
+                    <input type="file" id="importData" accept=".json">
+                    <p class="help-text">Import product research data from a JSON file.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clearData">Clear Database</label>
+                    <button id="clearDataBtn" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                    <p class="help-text">Warning: This will delete all your product research data.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Global Variables
+        let db;
+        let currentView = 'dashboardView';
+        let editingProductId = null;
+        let editingCertifierId = null;
+        let productImages = [];
+        let currentFilter = 'all';
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // Check online/offline status
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        
+        function updateOnlineStatus() {
+            const offlineIndicator = document.getElementById('offlineIndicator');
+            if (navigator.onLine) {
+                offlineIndicator.style.display = 'none';
+            } else {
+                offlineIndicator.style.display = 'flex';
+            }
+        }
+        
+        function init() {
+            updateOnlineStatus();
+            initDatabase();
+            initEventListeners();
+        }
+        
+        function initDatabase() {
+            const request = indexedDB.open('TayyibTrackerDB', 1);
+            
+            request.onerror = function(event) {
+                console.error("Database error:", event.target.errorCode);
+            };
+            
+            request.onupgradeneeded = function(event) {
+                const db = event.target.result;
+                
+                // Products store
+                if (!db.objectStoreNames.contains('products')) {
+                    const productsStore = db.createObjectStore('products', { keyPath: 'id', autoIncrement: true });
+                    productsStore.createIndex('name', 'name', { unique: false });
+                    productsStore.createIndex('status', 'status', { unique: false });
+                    productsStore.createIndex('brand', 'brand', { unique: false });
+                    productsStore.createIndex('category', 'category', { unique: false });
+                    productsStore.createIndex('inShoppingList', 'inShoppingList', { unique: false });
+                    productsStore.createIndex('dateAdded', 'dateAdded', { unique: false });
+                }
+                
+                // Certifiers store
+                if (!db.objectStoreNames.contains('certifiers')) {
+                    const certifiersStore = db.createObjectStore('certifiers', { keyPath: 'id', autoIncrement: true });
+                    certifiersStore.createIndex('name', 'name', { unique: true });
+                    certifiersStore.createIndex('status', 'status', { unique: false });
+                }
+                
+                // Images store
+                if (!db.objectStoreNames.contains('images')) {
+                    const imagesStore = db.createObjectStore('images', { keyPath: 'id', autoIncrement: true });
+                    imagesStore.createIndex('productId', 'productId', { unique: false });
+                }
+            };
+            
+            request.onsuccess = function(event) {
+                db = event.target.result;
+                loadDashboard();
+            };
+        }
+        
+        function initEventListeners() {
+            // Navigation
+            document.getElementById('dashboardBtn').addEventListener('click', () => showView('dashboardView'));
+            document.getElementById('productsBtn').addEventListener('click', () => { 
+                showView('productsView');
+                loadProducts();
+            });
+            document.getElementById('shoppingBtn').addEventListener('click', () => {
+                showView('shoppingListView');
+                loadShoppingList();
+            });
+            document.getElementById('certifiersBtn').addEventListener('click', () => {
+                showView('certifiersView');
+                loadCertifiers();
+            });
+            document.getElementById('settingsBtn').addEventListener('click', () => showView('settingsView'));
+            
+            // Dashboard
+            document.getElementById('addProductBtn').addEventListener('click', showAddProductView);
+            document.getElementById('viewAllProductsBtn').addEventListener('click', () => {
+                showView('productsView');
+                loadProducts();
+            });
+            document.getElementById('viewShoppingListBtn').addEventListener('click', () => {
+                showView('shoppingListView');
+                loadShoppingList();
+            });
+            
+            // Products
+            document.getElementById('addProductBtn2').addEventListener('click', showAddProductView);
+            document.getElementById('searchBtn').addEventListener('click', () => {
+                const searchTerm = document.getElementById('productSearch').value.trim();
+                loadProducts(searchTerm);
+            });
+            document.getElementById('productSearch').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = document.getElementById('productSearch').value.trim();
+                    loadProducts(searchTerm);
+                }
+            });
+            
+            // Filter buttons
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentFilter = e.target.dataset.filter;
+                    loadProducts();
+                });
+            });
+            
+            // Product detail
+            document.getElementById('backToProductsBtn').addEventListener('click', () => {
+                showView('productsView');
+                loadProducts();
+            });
+            document.getElementById('editProductBtn').addEventListener('click', () => {
+                showEditProductView(editingProductId);
+            });
+            
+            // Add/Edit Product
+            document.getElementById('cancelAddEditBtn').addEventListener('click', () => {
+                showView(currentView === 'addEditProductView' ? 'productsView' : currentView);
+                editingProductId = null;
+                resetProductForm();
+            });
+            document.getElementById('productForm').addEventListener('submit', saveProduct);
+            
+            // Tab navigation
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const tabName = e.target.dataset.tab;
+                    const tabParent = e.target.parentElement;
+                    
+                    // Remove active class from all tabs in the parent
+                    tabParent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    e.target.classList.add('active');
+                    
+                    // Hide all tab contents that are siblings of the tabs
+                    const tabContents = tabParent.parentElement.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the selected tab content
+                    const activeContent = tabParent.parentElement.querySelector(`#${tabName}Tab`);
+                    if (activeContent) {
+                        activeContent.classList.add('active');
+                    }
+                });
+            });
+            
+            // Image upload
+            document.getElementById('productImages').addEventListener('change', handleImageUpload);
+            
+            // Shopping List
+            document.getElementById('clearShoppingListBtn').addEventListener('click', clearShoppingList);
+            document.getElementById('searchShoppingBtn').addEventListener('click', () => {
+                const searchTerm = document.getElementById('shoppingSearch').value.trim();
+                loadShoppingList(searchTerm);
+            });
+            
+            // Certifiers
+            document.getElementById('addCertifierBtn').addEventListener('click', showAddCertifierView);
+            document.getElementById('cancelAddEditCertifierBtn').addEventListener('click', () => {
+                showView('certifiersView');
+                editingCertifierId = null;
+                resetCertifierForm();
+            });
+            document.getElementById('certifierForm').addEventListener('submit', saveCertifier);
+            
+            // Settings
+            document.getElementById('exportDataBtn').addEventListener('click', exportData);
+            document.getElementById('importData').addEventListener('change', importData);
+            document.getElementById('clearDataBtn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                    clearAllData();
+                }
+            });
+        }
+        
+        function showView(viewId) {
+            const views = document.querySelectorAll('.view');
+            views.forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            
+            const navBtns = document.querySelectorAll('.nav-links button');
+            navBtns.forEach(btn => btn.classList.remove('active'));
+            
+            switch (viewId) {
+                case 'dashboardView':
+                    document.getElementById('dashboardBtn').classList.add('active');
+                    loadDashboard();
+                    break;
+                case 'productsView':
+                    document.getElementById('productsBtn').classList.add('active');
+                    break;
+                case 'shoppingListView':
+                    document.getElementById('shoppingBtn').classList.add('active');
+                    break;
+                case 'certifiersView':
+                    document.getElementById('certifiersBtn').classList.add('active');
+                    break;
+                case 'settingsView':
+                    document.getElementById('settingsBtn').classList.add('active');
+                    break;
+            }
+            
+            currentView = viewId;
+        }
+        
+        // Dashboard functions
+        function loadDashboard() {
+            loadRecentProducts();
+            loadDashboardShoppingList();
+        }
+        
+        function loadRecentProducts() {
+            const recentProductsList = document.getElementById('recentProductsList');
+            recentProductsList.innerHTML = '<p>Loading recent products...</p>';
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            const index = store.index('dateAdded');
+            
+            const request = index.openCursor(null, 'prev');
+            
+            let products = [];
+            request.onsuccess = function(event) {
+                const cursor = event.target.result;
+                
+                if (cursor && products.length < 6) {
+                    products.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    renderProductsList(recentProductsList, products);
+                }
+            };
+            
+            request.onerror = function(event) {
+                recentProductsList.innerHTML = '<p>Error loading recent products.</p>';
+            };
+        }
+        
+        function loadDashboardShoppingList() {
+            const dashboardShoppingList = document.getElementById('dashboardShoppingList');
+            dashboardShoppingList.innerHTML = '<li>Loading shopping list...</li>';
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            
+            // Replace the problematic line with a regular getAll and filter after
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const products = request.result;
+                const shoppingItems = products.filter(product => product.inShoppingList === true).slice(0, 5);
+                renderShoppingList(dashboardShoppingList, shoppingItems);
+            };
+            
+            request.onerror = function(event) {
+                dashboardShoppingList.innerHTML = '<li>Error loading shopping list.</li>';
+            };
+        }
+
+        
+        // Products functions
+        function loadProducts(searchTerm = '') {
+            const productsList = document.getElementById('productsList');
+            productsList.innerHTML = '<p>Loading products...</p>';
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            
+            let products = [];
+            let request;
+            
+            if (searchTerm) {
+                // This is a simple search implementation, in a real app you'd want to use more sophisticated search
+                request = store.openCursor();
+                
+                request.onsuccess = function(event) {
+                    const cursor = event.target.result;
+                    
+                    if (cursor) {
+                        const product = cursor.value;
+                        
+                        // Search in name, brand, ingredients
+                        if (
+                            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            (product.brand && product.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (product.ingredients && product.ingredients.toLowerCase().includes(searchTerm.toLowerCase()))
+                        ) {
+                            if (currentFilter === 'all' || product.status === currentFilter) {
+                                products.push(product);
+                            }
+                        }
+                        cursor.continue();
+                    } else {
+                        renderProductsList(productsList, products);
+                    }
+                };
+            } else {
+                if (currentFilter === 'all') {
+                    request = store.openCursor();
+                } else {
+                    const index = store.index('status');
+                    request = index.openCursor(IDBKeyRange.only(currentFilter));
+                }
+                
+                request.onsuccess = function(event) {
+                    const cursor = event.target.result;
+                    
+                    if (cursor) {
+                        products.push(cursor.value);
+                        cursor.continue();
+                    } else {
+                        renderProductsList(productsList, products);
+                    }
+                };
+            }
+            
+            request.onerror = function(event) {
+                productsList.innerHTML = '<p>Error loading products.</p>';
+            };
+        }
+        
+        function renderProductsList(container, products) {
+            if (products.length === 0) {
+                container.innerHTML = '<p>No products found.</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.dataset.id = product.id;
+                
+                const statusClass = getStatusClass(product.status);
+                
+                // Fetch the first image for this product if any
+                const imageTransaction = db.transaction(['images'], 'readonly');
+                const imageStore = imageTransaction.objectStore('images');
+                const imageIndex = imageStore.index('productId');
+                const imageRequest = imageIndex.openCursor(IDBKeyRange.only(product.id));
+                
+                let imageHtml = `<div class="product-image"><i class="fas fa-image" style="font-size: 3rem; color: #ddd;"></i></div>`;
+                
+                imageRequest.onsuccess = function(event) {
+                    const cursor = event.target.result;
+                    
+                    if (cursor) {
+                        const image = cursor.value;
+                        imageHtml = `<div class="product-image"><img src="${image.data}" alt="${product.name}"></div>`;
+                        updateProductCard();
+                    } else {
+                        updateProductCard();
+                    }
+                };
+                
+                function updateProductCard() {
+                    productCard.innerHTML = `
+                        ${imageHtml}
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div>${product.brand || ''}</div>
+                            <div class="product-meta">
+                                <span class="status-badge ${statusClass}">${product.status}</span>
+                                <span>${product.inShoppingList ? '<i class="fas fa-shopping-cart"></i>' : ''}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    productCard.addEventListener('click', () => {
+                        showProductDetail(product.id);
+                    });
+                    
+                    container.appendChild(productCard);
+                }
+            });
+        }
+        self.addEventListener('install', event => {
+  self.skipWaiting();
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request).catch(() => {
+      return new Response('Offline mode - cannot fetch resource');
+    })
+  );
+});
+        function showProductDetail(id) {
+            editingProductId = id;
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            const request = store.get(Number(id));
+            
+            request.onsuccess = function(event) {
+                const product = request.result;
+                
+                if (product) {
+                    document.getElementById('productDetailTitle').textContent = product.name;
+                    
+                    const statusClass = getStatusClass(product.status);
+                    
+                    // Get images for this product
+                    const imageTransaction = db.transaction(['images'], 'readonly');
+                    const imageStore = imageTransaction.objectStore('images');
+                    const imageIndex = imageStore.index('productId');
+                    const imageRequest = imageIndex.openCursor(IDBKeyRange.only(product.id));
+                    
+                    let images = [];
+                    imageRequest.onsuccess = function(event) {
+                        const cursor = event.target.result;
+                        
+                        if (cursor) {
+                            images.push(cursor.value);
+                            cursor.continue();
+                        } else {
+                            // Render product detail with images
+                            const imageGallery = images.length > 0 ? 
+                                `<div class="image-gallery">
+                                    ${images.map(img => `<img src="${img.data}" alt="${product.name}" style="max-width: 100%; margin-bottom: 10px;">`).join('')}
+                                </div>` : '';
+                            
+                            document.getElementById('productDetailContent').innerHTML = `
+                                <div class="product-header" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                    <div>
+                                        <h3>${product.name}</h3>
+                                        <p>${product.brand || ''}</p>
+                                        <p>Category: ${product.category || 'Not specified'}</p>
+                                    </div>
+                                    <div>
+                                        <span class="status-badge ${statusClass}" style="font-size: 1rem; padding: 8px 15px;">${product.status}</span>
+                                        ${product.inShoppingList ? '<button id="removeFromShoppingBtn" class="btn btn-outline" style="margin-top: 10px;"><i class="fas fa-shopping-cart"></i> Remove from Shopping List</button>' : 
+                                        '<button id="addToShoppingBtn" class="btn btn-outline" style="margin-top: 10px;"><i class="fas fa-shopping-cart"></i> Add to Shopping List</button>'}
+                                    </div>
+                                </div>
+                                
+                                ${imageGallery}
+                                
+                                <div class="tabs">
+                                    <div class="tab active" data-tab="detailIngredients">Ingredients</div>
+                                    <div class="tab" data-tab="detailProcess">Process</div>
+                                    <div class="tab" data-tab="detailCertifications">Certifications</div>
+                                    <div class="tab" data-tab="detailSources">Sources</div>
+                                    <div class="tab" data-tab="detailReasoning">Status Reasoning</div>
+                                </div>
+                                
+                                <div id="detailIngredientsTab" class="tab-content active">
+                                    <h3>Ingredients & Components</h3>
+                                    <p>${product.ingredients || 'No ingredients information provided.'}</p>
+                                    
+                                    ${product.concernIngredients ? `
+                                        <h3 style="margin-top: 15px;">Ingredients of Concern</h3>
+                                        <p>${product.concernIngredients}</p>
+                                    ` : ''}
+                                </div>
+                                
+                                <div id="detailProcessTab" class="tab-content">
+                                    <h3>Manufacturing Process</h3>
+                                    <p>${product.manufacturingProcess || 'No manufacturing process information provided.'}</p>
+                                </div>
+                                
+                                <div id="detailCertificationsTab" class="tab-content">
+                                    <h3>Certifications</h3>
+                                    <p>${product.certifications || 'No certification information provided.'}</p>
+                                    
+                                    ${product.certifierName ? `
+                                        <h3 style="margin-top: 15px;">Certifier</h3>
+                                        <p>${product.certifierName}</p>
+                                    ` : ''}
+                                </div>
+                                
+                                <div id="detailSourcesTab" class="tab-content">
+                                    <h3>Information Sources</h3>
+                                    <p>${product.informationSources || 'No source information provided.'}</p>
+                                </div>
+                                
+                                <div id="detailReasoningTab" class="tab-content">
+                                    <h3>Status Reasoning</h3>
+                                    <p>${product.statusReasoning}</p>
+                                </div>
+                            `;
+                            
+                            // Add event listeners for the new tabs
+                            initDetailTabListeners();
+                            
+                            // Add event listeners for shopping list buttons
+                            if (product.inShoppingList) {
+                                document.getElementById('removeFromShoppingBtn').addEventListener('click', () => {
+                                    toggleShoppingList(product.id, false);
+                                });
+                            } else {
+                                document.getElementById('addToShoppingBtn').addEventListener('click', () => {
+                                    toggleShoppingList(product.id, true);
+                                });
+                            }
+                            
+                            // Load similar products
+                            loadSimilarProducts(product);
+                        }
+                    };
+                    
+                    showView('productDetailView');
+                } else {
+                    alert('Product not found.');
+                }
+            };
+            
+            request.onerror = function(event) {
+                alert('Error loading product details.');
+            };
+        }
+        
+        function initDetailTabListeners() {
+            const detailTabs = document.querySelectorAll('#productDetailContent .tab');
+            detailTabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    const tabName = e.target.dataset.tab;
+                    
+                    // Remove active class from all tabs
+                    detailTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    e.target.classList.add('active');
+                    
+                    // Hide all tab contents
+                    const tabContents = document.querySelectorAll('#productDetailContent .tab-content');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Show the selected tab content
+                    document.getElementById(`${tabName}Tab`).classList.add('active');
+                });
+            });
+        }
+        
+        function loadSimilarProducts(product) {
+            const similarProductsList = document.getElementById('similarProductsList');
+            similarProductsList.innerHTML = '<p>Finding similar products...</p>';
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            
+            // Find products with the same category or brand
+            const request = store.openCursor();
+            
+            let similarProducts = [];
+            request.onsuccess = function(event) {
+                const cursor = event.target.result;
+                
+                if (cursor) {
+                    const currentProduct = cursor.value;
+                    
+                    // Skip the current product
+                    if (currentProduct.id !== product.id) {
+                        // Check if it's in the same category or has the same brand
+                        if (
+                            (product.category && currentProduct.category && product.category === currentProduct.category) ||
+                            (product.brand && currentProduct.brand && product.brand === currentProduct.brand)
+                        ) {
+                            similarProducts.push(currentProduct);
+                        }
+                    }
+                    
+                    cursor.continue();
+                } else {
+                    // Limit to 6 similar products
+                    similarProducts = similarProducts.slice(0, 6);
+                    
+                    if (similarProducts.length > 0) {
+                        renderProductsList(similarProductsList, similarProducts);
+                    } else {
+                        similarProductsList.innerHTML = '<p>No similar products found.</p>';
+                    }
+                }
+            };
+            
+            request.onerror = function(event) {
+                similarProductsList.innerHTML = '<p>Error finding similar products.</p>';
+            };
+        }
+        
+        function showAddProductView() {
+            editingProductId = null;
+            resetProductForm();
+            document.getElementById('addEditTitle').textContent = 'Add New Product';
+            showView('addEditProductView');
+        }
+        
+        function showEditProductView(id) {
+            editingProductId = id;
+            document.getElementById('addEditTitle').textContent = 'Edit Product';
+            
+            const transaction = db.transaction(['products'], 'readonly');
+            const store = transaction.objectStore('products');
+            const request = store.get(Number(id));
+            
+            request.onsuccess = function(event) {
+                const product = request.result;
+                
+                if (product) {
+                    // Fill the form with product data
+                    document.getElementById('productId').value = product.id;
+                    document.getElementById('productName').value = product.name || '';
+                    document.getElementById('brandName').value = product.brand || '';
+                    document.getElementById('category').value = product.category || '';
+                    document.getElementById('ingredients').value = product.ingredients || '';
+                    document.getElementById('concernIngredients').value = product.concernIngredients || '';
+                    document.getElementById('manufacturingProcess').value = product.manufacturingProcess || '';
+                    document.getElementById('certifications').value = product.certifications || '';
+                    document.getElementById('certifierName').value = product.certifierName || '';
+                    document.getElementById('informationSources').value = product.informationSources || '';
+                    document.getElementById('status').value = product.status || '';
+                    document.getElementById('statusReasoning').value = product.statusReasoning || '';
+                    document.getElementById('addToShoppingList').checked = product.inShoppingList || false;
+                    
+                    // Load product images
+                    const imageTransaction = db.transaction(['images'], 'readonly');
+                    const imageStore = imageTransaction.objectStore('images');
+                    const imageIndex = imageStore.index('productId');
+                    const imageRequest = imageIndex.openCursor(IDBKeyRange.only(product.id));
+                    
+                    productImages = [];
+                    imageRequest.onsuccess = function(event) {
+                        const cursor = event.target.result;
+                        
+                        if (cursor) {
+                            productImages.push(cursor.value);
+                            cursor.continue();
+                        } else {
+                            updateImagePreview();
+                        }
+                    };
+                    
+                    showView('addEditProductView');
+                } else {
+                    alert('Product not found.');
+                }
+            };
+            
+            request.onerror = function(event) {
+                alert('Error loading product data for editing.');
+            };
+        }
+        
+        function resetProductForm() {
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            productImages = [];
+            updateImagePreview();
+        }
+        
+        function saveProduct(e) {
+            e.preventDefault();
+            
+            const productId = document.getElementById('productId').value ? Number(document.getElementById('productId').value) : null;
+            const product = {
+                name: document.getElementById('productName').value,
+                brand: document.getElementById('brandName').value,
+                category: document.getElementById('category').value,
+                ingredients: document.getElementById('ingredients').value,
+                concernIngredients: document.getElementById('concernIngredients').value,
+                manufacturingProcess: document.getElementById('manufacturingProcess').value,
+                certifications: document.getElementById('certifications').value,
+                certifierName: document.getElementById('certifierName').value,
+                informationSources: document.getElementById('informationSources').value,
+                status: document.getElementById('status').value,
+                statusReasoning: document.getElementById('statusReasoning').value,
+                inShoppingList: document.getElementById('addToShoppingList').checked,
+                dateAdded: productId ? undefined : new Date().toISOString(),
+                dateModified: new Date().toISOString()
+            };
+            
+            const transaction = db.transaction(['products'], 'readwrite');
+            const store = transaction.objectStore('products');
+            
+            let request;
+            if (productId) {
+                // Update existing product
+                product.id = productId;
+                request = store.put(product);
+            } else {
+                // Add new product
+                request = store.add(product);
+            }
+            
+            request.onsuccess = function(event) {
+                const newProductId = request.result;
+                
+                // Save images
+                saveProductImages(productId || newProductId);
+                
+                alert(`Product ${productId ? 'updated' : 'added'} successfully!`);
+                
+                // Return to previous view
+                showView('productsView');
+                loadProducts();
+            };
+            
+            request.onerror = function(event) {
+                alert(`Error ${productId ? 'updating' : 'adding'} product: ${event.target.error}`);
+            };
+        }
+        
+        function handleImageUpload(e) {
+            const files = e.target.files;
+            
+            if (!files.length) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                if (!file.type.match('image.*')) {
+                    alert('Please select image files only.');
+                    continue;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const imageData = event.target.result;
+                    
+                    productImages.push({
+                        data: imageData,
+                        name: file.name,
+                        type: file.type
+                    });
+                    
+                    updateImagePreview();
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function updateImagePreview() {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.innerHTML = '';
+            
+            productImages.forEach((image, index) => {
+                const imageItem = document.createElement('div');
+                imageItem.className = 'image-item';
+                
+                imageItem.innerHTML = `
+                    <img src="${image.data}" alt="Product image">
+                    <span class="remove" data-index="${index}">×</span>
+                `;
+                
+                imagePreview.appendChild(imageItem);
+            });
+            
+            // Add event listeners for remove buttons
+            document.querySelectorAll('.image-item .remove').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = Number(e.target.dataset.index);
+                    productImages.splice(index, 1);
+                    updateImagePreview();
+                });
+            });
+        }
+        
+        function saveProductImages(productId) {
+            // First, delete existing images for this product
+            const deleteTransaction = db.transaction(['images'], 'readwrite');
+            const deleteStore = deleteTransaction.objectStore('images');
+            const deleteIndex = deleteStore.index('productId');
+            const deleteRequest = deleteIndex.openCursor(IDBKeyRange.only(productId));
+            
+            deleteRequest.onsuccess = function(event) {
+                const cursor = event.target.result;
+                
+                if (cursor) {
+                    deleteStore.delete(cursor.primaryKey);
+                    cursor.continue();
+                } else {
+                    // After deleting, add the new images
+                    const addTransaction = db.transaction(['images'], 'readwrite');
+                    const addStore = addTransaction.objectStore('images');
+                    
+                    productImages.forEach(image => {
+                        addStore.add({
+                            productId: productId,
+                            data: image.data,
+                            name: image.name,
+                            type: image.type
+                        });
+                    });
+                }
+            };
+        }
+        
+        function toggleShoppingList(productId, add) {
+            const transaction = db.transaction(['products'], 'readwrite');
+            const store = transaction.objectStore('products');
+            const request = store.get(Number(productId));
+            
+            request.onsuccess = function(event) {
+                const product = request.result;
+                
+                if (product) {
+                    product.inShoppingList = add;
+                    store.put(product);
+                    
+                    // Refresh the product detail view
+                    showProductDetail(productId);
+                }
+            };
+        }
+        
+        // Shopping List functions
+        function loadShoppingList(searchTerm = '') {
+    const shoppingList = document.getElementById('shoppingList');
+    shoppingList.innerHTML = '<li>Loading shopping list...</li>';
+    
+    const transaction = db.transaction(['products'], 'readonly');
+    const store = transaction.objectStore('products');
+    
+    // Use getAll instead of index.openCursor with IDBKeyRange.only
+    const request = store.getAll();
+    
+    request.onsuccess = function(event) {
+        const allProducts = request.result;
+        // Filter products that are in the shopping list
+        const items = allProducts.filter(product => 
+            product.inShoppingList === true && 
+            (!searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        
+        renderShoppingList(shoppingList, items);
+    };
+    
+    request.onerror = function(event) {
+        shoppingList.innerHTML = '<li>Error loading shopping list.</li>';
+    };
+}
+
+        
+        function renderShoppingList(container, items) {
+            if (items.length === 0) {
+                container.innerHTML = '<li>No items in shopping list.</li>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            items.forEach(product => {
+                const li = document.createElement('li');
+                li.className = 'shopping-item';
+                
+                const statusClass = getStatusClass(product.status);
+                
+                li.innerHTML = `
+                    <div class="shopping-item-status">
+                        <span class="status-badge ${statusClass}">${product.status}</span>
+                    </div>
+                    <div class="shopping-item-name">${product.name}</div>
+                    <div class="shopping-item-actions">
+                        <button class="btn btn-outline view-product" data-id="${product.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline remove-from-list" data-id="${product.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(li);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.view-product').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.closest('.view-product').dataset.id);
+                    showProductDetail(id);
+});
+});
+
+            document.querySelectorAll('.remove-from-list').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.closest('.remove-from-list').dataset.id);
+                    toggleShoppingList(id, false);
+                    loadShoppingList();
+                    
+                    // Also refresh dashboard shopping list if on dashboard
+                    if (currentView === 'dashboardView') {
+                        loadDashboardShoppingList();
+                    }
+                });
+            });
+        }
+        
+        function clearShoppingList() {
+            if (!confirm('Are you sure you want to clear your shopping list?')) return;
+            
+            const transaction = db.transaction(['products'], 'readwrite');
+            const store = transaction.objectStore('products');
+            const index = store.index('inShoppingList');
+            
+            const request = index.openCursor(IDBKeyRange.only(true));
+            
+            request.onsuccess = function(event) {
+                const cursor = event.target.result;
+                
+                if (cursor) {
+                    const product = cursor.value;
+                    product.inShoppingList = false;
+                    store.put(product);
+                    cursor.continue();
+                } else {
+                    loadShoppingList();
+                    
+                    // Also refresh dashboard shopping list if on dashboard
+                    if (currentView === 'dashboardView') {
+                        loadDashboardShoppingList();
+                    }
+                }
+            };
+        }
+        
+        // Certifier functions
+        function loadCertifiers() {
+            // Get all tabs ready
+            document.getElementById('trustedCertifiersList').innerHTML = '<li>Loading trusted certifiers...</li>';
+            document.getElementById('doubtfulCertifiersList').innerHTML = '<li>Loading doubtful certifiers...</li>';
+            document.getElementById('allCertifiersList').innerHTML = '<li>Loading all certifiers...</li>';
+            
+            const transaction = db.transaction(['certifiers'], 'readonly');
+            const store = transaction.objectStore('certifiers');
+            
+            const request = store.getAll();
+            
+            request.onsuccess = function(event) {
+                const certifiers = request.result;
+                
+                const trusted = certifiers.filter(c => c.status === 'trusted');
+                const doubtful = certifiers.filter(c => c.status === 'doubtful');
+                
+                renderCertifiersList(document.getElementById('trustedCertifiersList'), trusted, 'trusted');
+                renderCertifiersList(document.getElementById('doubtfulCertifiersList'), doubtful, 'doubtful');
+                renderCertifiersList(document.getElementById('allCertifiersList'), certifiers, 'all');
+            };
+            
+            request.onerror = function(event) {
+                document.getElementById('trustedCertifiersList').innerHTML = '<li>Error loading certifiers.</li>';
+                document.getElementById('doubtfulCertifiersList').innerHTML = '<li>Error loading certifiers.</li>';
+                document.getElementById('allCertifiersList').innerHTML = '<li>Error loading certifiers.</li>';
+            };
+        }
+        
+        function renderCertifiersList(container, certifiers, listType) {
+            if (certifiers.length === 0) {
+                container.innerHTML = `<li>No ${listType === 'all' ? '' : listType + ' '}certifiers found.</li>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            certifiers.forEach(certifier => {
+                const li = document.createElement('li');
+                li.className = 'certifier-item';
+                
+                li.innerHTML = `
+                    <div class="certifier-info">
+                        <div class="certifier-name">${certifier.name}</div>
+                        <div class="certifier-status">${certifier.status}</div>
+                    </div>
+                    <div class="certifier-actions">
+                        <button class="btn btn-outline edit-certifier" data-id="${certifier.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline delete-certifier" data-id="${certifier.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(li);
+            });
+            
+            // Add event listeners
+            container.querySelectorAll('.edit-certifier').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.closest('.edit-certifier').dataset.id);
+                    showEditCertifierView(id);
+                });
+            });
+            
+            container.querySelectorAll('.delete-certifier').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = Number(e.target.closest('.delete-certifier').dataset.id);
+                    deleteCertifier(id);
+                });
+            });
+        }
+        
+        function showAddCertifierView() {
+            editingCertifierId = null;
+            resetCertifierForm();
+            document.getElementById('addEditCertifierTitle').textContent = 'Add Certifier';
+            showView('addEditCertifierView');
+        }
+        
+        function showEditCertifierView(id) {
+            editingCertifierId = id;
+            document.getElementById('addEditCertifierTitle').textContent = 'Edit Certifier';
+            
+            const transaction = db.transaction(['certifiers'], 'readonly');
+            const store = transaction.objectStore('certifiers');
+            const request = store.get(Number(id));
+            
+            request.onsuccess = function(event) {
+                const certifier = request.result;
+                
+                if (certifier) {
+                    // Fill the form with certifier data
+                    document.getElementById('certifierId').value = certifier.id;
+                    document.getElementById('certifierNameInput').value = certifier.name || '';
+                    document.getElementById('certifierStatus').value = certifier.status || '';
+                    document.getElementById('certifierNotes').value = certifier.notes || '';
+                    document.getElementById('certifierWebsite').value = certifier.website || '';
+                    
+                    showView('addEditCertifierView');
+                } else {
+                    alert('Certifier not found.');
+                }
+            };
+            
+            request.onerror = function(event) {
+                alert('Error loading certifier data for editing.');
+            };
+        }
+        
+        function resetCertifierForm() {
+            document.getElementById('certifierForm').reset();
+            document.getElementById('certifierId').value = '';
+        }
+        
+        function saveCertifier(e) {
+            e.preventDefault();
+            
+            const certifierId = document.getElementById('certifierId').value ? Number(document.getElementById('certifierId').value) : null;
+            const certifier = {
+                name: document.getElementById('certifierNameInput').value,
+                status: document.getElementById('certifierStatus').value,
+                notes: document.getElementById('certifierNotes').value,
+                website: document.getElementById('certifierWebsite').value,
+                dateModified: new Date().toISOString()
+            };
+            
+            const transaction = db.transaction(['certifiers'], 'readwrite');
+            const store = transaction.objectStore('certifiers');
+            
+            let request;
+            if (certifierId) {
+                // Update existing certifier
+                certifier.id = certifierId;
+                request = store.put(certifier);
+            } else {
+                // Add new certifier
+                certifier.dateAdded = new Date().toISOString();
+                request = store.add(certifier);
+            }
+            
+            request.onsuccess = function(event) {
+                alert(`Certifier ${certifierId ? 'updated' : 'added'} successfully!`);
+                
+                // Return to certifiers view
+                showView('certifiersView');
+                loadCertifiers();
+            };
+            
+            request.onerror = function(event) {
+                alert(`Error ${certifierId ? 'updating' : 'adding'} certifier: ${event.target.error}`);
+            };
+        }
+        
+        function deleteCertifier(id) {
+            if (!confirm('Are you sure you want to delete this certifier?')) return;
+            
+            const transaction = db.transaction(['certifiers'], 'readwrite');
+            const store = transaction.objectStore('certifiers');
+            const request = store.delete(Number(id));
+            
+            request.onsuccess = function(event) {
+                alert('Certifier deleted successfully!');
+                loadCertifiers();
+            };
+            
+            request.onerror = function(event) {
+                alert('Error deleting certifier.');
+            };
+        }
+        
+        // Settings functions
+        function exportData() {
+            // Export products
+            const productsTransaction = db.transaction(['products'], 'readonly');
+            const productsStore = productsTransaction.objectStore('products');
+            const productsRequest = productsStore.getAll();
+            
+            productsRequest.onsuccess = function(event) {
+                const products = productsRequest.result;
+                
+                // Export certifiers
+                const certifiersTransaction = db.transaction(['certifiers'], 'readonly');
+                const certifiersStore = certifiersTransaction.objectStore('certifiers');
+                const certifiersRequest = certifiersStore.getAll();
+                
+                certifiersRequest.onsuccess = function(event) {
+                    const certifiers = certifiersRequest.result;
+                    
+                    // Export images
+                    const imagesTransaction = db.transaction(['images'], 'readonly');
+                    const imagesStore = imagesTransaction.objectStore('images');
+                    const imagesRequest = imagesStore.getAll();
+                    
+                    imagesRequest.onsuccess = function(event) {
+                        const images = imagesRequest.result;
+                        
+                        const exportData = {
+                            products,
+                            certifiers,
+                            images,
+                            exportDate: new Date().toISOString()
+                        };
+                        
+                        // Create a download link for the JSON file
+                        const dataStr = JSON.stringify(exportData);
+                        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                        
+                        const exportFileDefaultName = 'tayyib-tracker-export.json';
+                        
+                        const linkElement = document.createElement('a');
+                        linkElement.setAttribute('href', dataUri);
+                        linkElement.setAttribute('download', exportFileDefaultName);
+                        linkElement.click();
+                    };
+                };
+            };
+        }
+        
+        function importData(e) {
+            const file = e.target.files;
+            
+            if (!file) return;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    if (!confirm('Importing data will replace all your existing data. Continue?')) return;
+                    
+                    // Clear existing data
+                    clearAllData(() => {
+                        // Import products
+                        const productTransaction = db.transaction(['products'], 'readwrite');
+                        const productStore = productTransaction.objectStore('products');
+                        
+                        data.products.forEach(product => {
+                            productStore.add(product);
+                        });
+                        
+                        // Import certifiers
+                        const certifierTransaction = db.transaction(['certifiers'], 'readwrite');
+                        const certifierStore = certifierTransaction.objectStore('certifiers');
+                        
+                        data.certifiers.forEach(certifier => {
+                            certifierStore.add(certifier);
+                        });
+                        
+                        // Import images
+                        const imageTransaction = db.transaction(['images'], 'readwrite');
+                        const imageStore = imageTransaction.objectStore('images');
+                        
+                        data.images.forEach(image => {
+                            imageStore.add(image);
+                        });
+                        
+                        alert('Data imported successfully!');
+                        loadDashboard();
+                    });
+                } catch (error) {
+                    alert('Error importing data: Invalid file format.');
+                    console.error(error);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function clearAllData(callback) {
+            // Clear products
+            const productTransaction = db.transaction(['products'], 'readwrite');
+            const productStore = productTransaction.objectStore('products');
+            const productClearRequest = productStore.clear();
+            
+            productClearRequest.onsuccess = function() {
+                // Clear certifiers
+                const certifierTransaction = db.transaction(['certifiers'], 'readwrite');
+                const certifierStore = certifierTransaction.objectStore('certifiers');
+                const certifierClearRequest = certifierStore.clear();
+                
+                certifierClearRequest.onsuccess = function() {
+                    // Clear images
+                    const imageTransaction = db.transaction(['images'], 'readwrite');
+                    const imageStore = imageTransaction.objectStore('images');
+                    const imageClearRequest = imageStore.clear();
+                    
+                    imageClearRequest.onsuccess = function() {
+                        if (callback) callback();
+                        else alert('All data cleared successfully!');
+                    };
+                };
+            };
+        }
+        
+        // Helper functions
+        function getStatusClass(status) {
+            switch (status) {
+                case 'halal':
+                    return 'status-halal';
+                case 'mushbooh':
+                    return 'status-mushbooh';
+                case 'haram':
+                    return 'status-haram';
+                case 'tayyib':
+                    return 'status-tayyib';
+                default:
+                    return '';
+            }
+        }
+        
+        // Service Worker Registration for PWA
+        /* if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registered with scope:', registration.scope);
+                }).catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
+        } */
+
+
+
+        
+// Function to add sample data to the Tayyib Tracker
+function addSampleData() {
+console.log("Adding sample data to Tayyib Tracker...");
+
+// Sample product data
+const sampleProducts = [
+{
+name: "Organic Grass-Fed Beef",
+brand: "Halal Farms",
+category: "Meat",
+ingredients: "100% Organic Grass-Fed Beef",
+concernIngredients: "",
+manufacturingProcess: "Hand slaughtered according to Islamic guidelines. Animals are raised without antibiotics or hormones.",
+certifications: "Certified Halal by Islamic Food Council",
+certifierName: "Islamic Food Council",
+informationSources: "Company website, email correspondence with manufacturer on 05/01/2025",
+status: "tayyib",
+statusReasoning: "Animals are treated ethically, raised on organic grass without hormones or antibiotics, and slaughtered according to Islamic guidelines. The company is transparent about their practices.",
+inShoppingList: true,
+dateAdded: new Date().toISOString(),
+dateModified: new Date().toISOString()
+},
+{
+name: "Vegetable Oil",
+brand: "Golden Harvest",
+category: "Cooking Oil",
+ingredients: "Soybean oil, palm oil, preservatives",
+concernIngredients: "May contain traces of alcohol-based processing aids",
+manufacturingProcess: "Refined using potential alcohol-based solvents, but manufacturer claims all solvents are removed in the final product",
+certifications: "None",
+certifierName: "",
+informationSources: "Phone call with manufacturer customer service on 04/15/2025",
+status: "mushbooh",
+statusReasoning: "The manufacturing process involves alcohol-based solvents which raises concerns, even though the manufacturer claims they are removed in the final product. No halal certification.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 86400000).toISOString(),
+dateModified: new Date(Date.now() - 86400000).toISOString()
+},
+{
+name: "Traditional Gelatin Dessert",
+brand: "Sweet Treats",
+category: "Desserts",
+ingredients: "Sugar, gelatin, artificial flavors, colorings",
+concernIngredients: "Gelatin (porcine source)",
+manufacturingProcess: "Standard food manufacturing process",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, manufacturer website",
+status: "haram",
+statusReasoning: "Contains pork-derived gelatin which is explicitly haram. The manufacturer confirmed this on their website.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 172800000).toISOString(),
+dateModified: new Date(Date.now() - 172800000).toISOString()
+},
+{
+name: "Organic Honey",
+brand: "Pure Nature",
+category: "Sweeteners",
+ingredients: "100% Organic Raw Honey",
+concernIngredients: "",
+manufacturingProcess: "Cold extracted from organic beehives, unfiltered and unpasteurized",
+certifications: "Organic Certified",
+certifierName: "Organic Food Council",
+informationSources: "Product packaging, company website, visit to their farm on 03/10/2025",
+status: "tayyib",
+statusReasoning: "Pure natural product with no additives. The bees are kept in a natural environment without pesticides. The company follows ethical practices in harvesting the honey.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 259200000).toISOString(),
+dateModified: new Date(Date.now() - 259200000).toISOString()
+},
+{
+name: "Vitamin D3 Supplements",
+brand: "Health Plus",
+category: "Supplements",
+ingredients: "Vitamin D3 (cholecalciferol), gelatin capsule, fillers",
+concernIngredients: "Vitamin D3 (potentially derived from lanolin), gelatin capsule (source unspecified)",
+manufacturingProcess: "Standard pharmaceutical process",
+certifications: "None",
+certifierName: "",
+informationSources: "Email correspondence with manufacturer on 02/15/2025",
+status: "mushbooh",
+statusReasoning: "The Vitamin D3 is derived from lanolin (sheep's wool), which is generally acceptable, but the gelatin capsule source is not specified. The manufacturer was vague about the gelatin source.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 345600000).toISOString(),
+dateModified: new Date(Date.now() - 345600000).toISOString()
+},
+{
+name: "Whole Wheat Bread",
+brand: "Natural Bakery",
+category: "Bread",
+ingredients: "Whole wheat flour, water, yeast, salt, vegetable oil",
+concernIngredients: "",
+manufacturingProcess: "Traditional baking process",
+certifications: "Halal Certified",
+certifierName: "Global Halal Authority",
+informationSources: "Product packaging, company website",
+status: "halal",
+statusReasoning: "All ingredients are plant-based and permissible. Certified by a reputable halal authority.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 432000000).toISOString(),
+dateModified: new Date(Date.now() - 432000000).toISOString()
+},
+{
+name: "Chocolate Chip Cookies",
+brand: "Sweet Delights",
+category: "Snacks",
+ingredients: "Wheat flour, sugar, chocolate chips (cocoa mass, sugar, lecithin), butter, eggs, vanilla extract",
+concernIngredients: "Vanilla extract (may contain alcohol), lecithin (source unspecified)",
+manufacturingProcess: "Baked in facilities that also process products containing alcohol",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, company FAQ page",
+status: "mushbooh",
+statusReasoning: "Vanilla extract may contain alcohol, though in small amounts that may be transformed during baking. The source of lecithin is not specified. Cross-contamination concerns due to shared facilities.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 518400000).toISOString(),
+dateModified: new Date(Date.now() - 518400000).toISOString()
+},
+{
+name: "Free-Range Chicken",
+brand: "Ethical Farms",
+category: "Meat",
+ingredients: "100% Chicken",
+concernIngredients: "",
+manufacturingProcess: "Hand slaughtered according to Islamic guidelines. Birds are free-range with natural feed.",
+certifications: "Certified Halal by Islamic Society",
+certifierName: "Islamic Society",
+informationSources: "Store manager interview on 01/20/2025, certification documents",
+status: "tayyib",
+statusReasoning: "Chickens are raised in humane conditions with natural feed and no antibiotics. Properly slaughtered according to Islamic guidelines with valid certification.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 604800000).toISOString(),
+dateModified: new Date(Date.now() - 604800000).toISOString()
+},
+{
+name: "Vanilla Ice Cream",
+brand: "Creamy Delights",
+category: "Desserts",
+ingredients: "Milk, cream, sugar, egg yolks, vanilla extract",
+concernIngredients: "Vanilla extract (contains alcohol)",
+manufacturingProcess: "Standard ice cream manufacturing process",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, manufacturer website",
+status: "mushbooh",
+statusReasoning: "Contains vanilla extract with alcohol, though in small quantities. The dairy ingredients are from unknown sources without clear information about rennet usage in their production chain.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 691200000).toISOString(),
+dateModified: new Date(Date.now() - 691200000).toISOString()
+},
+{
+name: "Organic Lentils",
+brand: "Earth Harvest",
+category: "Grains \& Legumes",
+ingredients: "100% Organic Lentils",
+concernIngredients: "",
+manufacturingProcess: "Cleaned, sorted, and packaged in dedicated facility",
+certifications: "Organic Certified",
+certifierName: "Organic Foods Association",
+informationSources: "Product packaging, company website",
+status: "tayyib",
+statusReasoning: "Single, unprocessed ingredient that is inherently halal. Organic certification ensures no harmful pesticides. The company follows sustainable farming practices.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 777600000).toISOString(),
+dateModified: new Date(Date.now() - 777600000).toISOString()
+},
+{
+name: "Cheese Crackers",
+brand: "Snack Time",
+category: "Snacks",
+ingredients: "Wheat flour, vegetable oil, cheese powder (milk, enzymes), salt, yeast extract",
+concernIngredients: "Cheese powder (enzymes source unspecified), yeast extract",
+manufacturingProcess: "Standard baking and flavoring process",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, email inquiry to manufacturer on 12/05/2024",
+status: "mushbooh",
+statusReasoning: "The enzymes used in the cheese may be derived from microbial or animal sources, but the manufacturer did not provide specific information. Yeast extract may be cultured in media containing questionable ingredients.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 864000000).toISOString(),
+dateModified: new Date(Date.now() - 864000000).toISOString()
+},
+{
+name: "Wine Vinegar",
+brand: "Gourmet Essentials",
+category: "Condiments",
+ingredients: "Wine Vinegar",
+concernIngredients: "Derived from wine (alcohol)",
+manufacturingProcess: "Fermented from wine",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, general knowledge of vinegar production",
+status: "mushbooh",
+statusReasoning: "Derived from wine (alcoholic source) but undergoes complete chemical transformation into vinegar. Some scholars consider it halal after transformation while others avoid it due to its origin.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 950400000).toISOString(),
+dateModified: new Date(Date.now() - 950400000).toISOString()
+},
+{
+name: "Bacon Flavored Chips",
+brand: "Crispy Snacks",
+category: "Snacks",
+ingredients: "Potatoes, vegetable oil, bacon flavor (contains pork derivatives), salt, spices",
+concernIngredients: "Bacon flavor (contains pork derivatives)",
+manufacturingProcess: "Standard snack manufacturing",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label clearly states 'contains pork derivatives'",
+status: "haram",
+statusReasoning: "Contains actual pork derivatives in the flavoring, explicitly stated on the label.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1036800000).toISOString(),
+dateModified: new Date(Date.now() - 1036800000).toISOString()
+},
+{
+name: "Organic Apple Juice",
+brand: "Pure Harvest",
+category: "Beverages",
+ingredients: "100% Organic Apple Juice",
+concernIngredients: "",
+manufacturingProcess: "Cold-pressed from organic apples, no added preservatives",
+certifications: "Organic Certified",
+certifierName: "Organic Foods Association",
+informationSources: "Product packaging, company website",
+status: "tayyib",
+statusReasoning: "Single ingredient product with no additives. Organic certification ensures no harmful pesticides. The company follows sustainable and ethical farming practices.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 1123200000).toISOString(),
+dateModified: new Date(Date.now() - 1123200000).toISOString()
+},
+{
+name: "Marshmallows",
+brand: "Fluffy Delights",
+category: "Confectionery",
+ingredients: "Sugar, corn syrup, gelatin, vanilla flavor, cornstarch",
+concernIngredients: "Gelatin (source unspecified)",
+manufacturingProcess: "Standard confectionery manufacturing",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, company website FAQ",
+status: "mushbooh",
+statusReasoning: "Contains gelatin but the source is not specified. When contacted, the company stated they use a mix of bovine and porcine gelatin depending on availability, without specifying which batch contains what.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1209600000).toISOString(),
+dateModified: new Date(Date.now() - 1209600000).toISOString()
+},
+{
+name: "Brown Rice",
+brand: "Healthy Grains",
+category: "Grains \& Legumes",
+ingredients: "100% Brown Rice",
+concernIngredients: "",
+manufacturingProcess: "Hulled and packaged in dedicated facility",
+certifications: "None",
+certifierName: "",
+informationSources: "Product packaging",
+status: "halal",
+statusReasoning: "Single, unprocessed plant ingredient that is inherently halal with no concerns about processing methods.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 1296000000).toISOString(),
+dateModified: new Date(Date.now() - 1296000000).toISOString()
+},
+{
+name: "Gummy Vitamins",
+brand: "Health First",
+category: "Supplements",
+ingredients: "Glucose syrup, sugar, gelatin, vitamin mix, citric acid, natural flavors, colorings",
+concernIngredients: "Gelatin (porcine source confirmed)",
+manufacturingProcess: "Standard supplement manufacturing",
+certifications: "None",
+certifierName: "",
+informationSources: "Email correspondence with manufacturer on 11/15/2024 confirming pork gelatin use",
+status: "haram",
+statusReasoning: "Manufacturer confirmed they use pork-derived gelatin in their gummy vitamins. No halal alternatives available from this brand.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1382400000).toISOString(),
+dateModified: new Date(Date.now() - 1382400000).toISOString()
+},
+{
+name: "Almond Milk",
+brand: "Plant Pure",
+category: "Beverages",
+ingredients: "Filtered water, almonds, calcium carbonate, sea salt, vitamin D2, vitamin B12",
+concernIngredients: "",
+manufacturingProcess: "Almonds are ground and filtered with water, then fortified with vitamins",
+certifications: "Vegan Certified",
+certifierName: "Vegan Society",
+informationSources: "Product packaging, company website",
+status: "tayyib",
+statusReasoning: "All plant-based ingredients with no additives of concern. The company follows ethical and sustainable practices. Fortified with essential nutrients.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 1468800000).toISOString(),
+dateModified: new Date(Date.now() - 1468800000).toISOString()
+},
+{
+name: "Red Wine Pasta Sauce",
+brand: "Italian Tradition",
+category: "Sauces",
+ingredients: "Tomatoes, red wine, olive oil, garlic, herbs, salt, sugar",
+concernIngredients: "Red wine (alcohol)",
+manufacturingProcess: "Simmered with wine, some alcohol may remain after cooking",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, general knowledge of cooking with wine",
+status: "haram",
+statusReasoning: "Contains red wine as a significant ingredient. While some alcohol evaporates during cooking, studies show that up to 45% can remain in simmered dishes.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1555200000).toISOString(),
+dateModified: new Date(Date.now() - 1555200000).toISOString()
+},
+{
+name: "Hand-Slaughtered Lamb",
+brand: "Halal Meats Direct",
+category: "Meat",
+ingredients: "100% Lamb",
+concernIngredients: "",
+manufacturingProcess: "Hand slaughtered by Muslim butcher with proper Tasmiyah. Animals raised on natural pastures.",
+certifications: "Certified Halal by Local Islamic Center",
+certifierName: "Local Islamic Center",
+informationSources: "Direct conversation with the butcher, observed slaughter process on 10/05/2024",
+status: "tayyib",
+statusReasoning: "Properly slaughtered according to Islamic guidelines with personal verification. Animals are raised ethically on natural pasture without hormones or antibiotics.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 1641600000).toISOString(),
+dateModified: new Date(Date.now() - 1641600000).toISOString()
+},
+{
+name: "Fruit Yogurt",
+brand: "Dairy Fresh",
+category: "Dairy",
+ingredients: "Milk, fruit puree, sugar, bacterial cultures, pectin, natural flavors",
+concernIngredients: "Natural flavors (source unspecified), bacterial cultures (growth medium unspecified)",
+manufacturingProcess: "Standard yogurt fermentation process",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label, company website",
+status: "mushbooh",
+statusReasoning: "Concerns about the source of the bacterial cultures and what medium they were grown in. The natural flavors source is not specified. The company did not respond to inquiries about these ingredients.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1728000000).toISOString(),
+dateModified: new Date(Date.now() - 1728000000).toISOString()
+},
+{
+name: "Organic Extra Virgin Olive Oil",
+brand: "Mediterranean Gold",
+category: "Cooking Oil",
+ingredients: "100% Organic Extra Virgin Olive Oil",
+concernIngredients: "",
+manufacturingProcess: "Cold-pressed from organic olives, unfiltered",
+certifications: "Organic Certified",
+certifierName: "Organic Foods Association",
+informationSources: "Product packaging, visit to olive farm on 09/15/2024",
+status: "tayyib",
+statusReasoning: "Single, unprocessed ingredient that is inherently halal. Organic certification ensures no harmful pesticides. Cold-pressed without chemicals or high heat preserves nutritional value.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 1814400000).toISOString(),
+dateModified: new Date(Date.now() - 1814400000).toISOString()
+},
+{
+name: "Soy Sauce",
+brand: "Asian Essentials",
+category: "Condiments",
+ingredients: "Water, soybeans, wheat, salt, alcohol (as preservative)",
+concernIngredients: "Alcohol as preservative",
+manufacturingProcess: "Traditional fermentation process with added alcohol as preservative",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label clearly states 'contains alcohol'",
+status: "mushbooh",
+statusReasoning: "Contains added alcohol as a preservative (about 2-3%). Some scholars permit it under the principle of transformation and small quantity, while others consider it impermissible.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1900800000).toISOString(),
+dateModified: new Date(Date.now() - 1900800000).toISOString()
+},
+{
+name: "Vanilla Extract",
+brand: "Baking Essentials",
+category: "Baking Ingredients",
+ingredients: "Alcohol, water, vanilla bean extractives",
+concernIngredients: "Alcohol (35-40%)",
+manufacturingProcess: "Vanilla beans extracted in alcohol solution",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label states '35% alcohol by volume'",
+status: "haram",
+statusReasoning: "Contains significant amount of alcohol as a primary ingredient, not just as a trace or preservative.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 1987200000).toISOString(),
+dateModified: new Date(Date.now() - 1987200000).toISOString()
+},
+{
+name: "Locally-Caught Fish",
+brand: "Coastal Fishery",
+category: "Seafood",
+ingredients: "100% Wild-Caught Salmon",
+concernIngredients: "",
+manufacturingProcess: "Sustainably caught, properly scaled and cleaned",
+certifications: "Sustainable Fishing Certified",
+certifierName: "Ocean Conservation Council",
+informationSources: "Direct conversation with fisherman, observed cleaning process on 08/01/2024",
+status: "tayyib",
+statusReasoning: "All seafood is inherently halal. This fish is wild-caught using sustainable methods, not farm-raised with potential harmful feeds. Properly scaled and cleaned.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 2073600000).toISOString(),
+dateModified: new Date(Date.now() - 2073600000).toISOString()
+},
+{
+name: "Cheese Selection Box",
+brand: "Artisan Dairy",
+category: "Dairy",
+ingredients: "Various milk types, salt, enzymes, cultures (specific ingredients vary by cheese type)",
+concernIngredients: "Rennet/enzymes (source unspecified for some varieties)",
+manufacturingProcess: "Traditional cheese-making methods",
+certifications: "None",
+certifierName: "",
+informationSources: "Product packaging, company website, email inquiry on 07/15/2024",
+status: "mushbooh",
+statusReasoning: "The box contains multiple cheese varieties. Some clearly use microbial enzymes (halal) while others use traditional rennet without specifying the source (potentially animal-derived from non-halal slaughter).",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 2160000000).toISOString(),
+dateModified: new Date(Date.now() - 2160000000).toISOString()
+},
+{
+name: "Organic Green Tea",
+brand: "Pure Leaf",
+category: "Beverages",
+ingredients: "100% Organic Green Tea Leaves",
+concernIngredients: "",
+manufacturingProcess: "Leaves are dried and packaged without additives",
+certifications: "Organic Certified",
+certifierName: "Organic Foods Association",
+informationSources: "Product packaging, company website",
+status: "tayyib",
+statusReasoning: "Single, unprocessed plant ingredient that is inherently halal. Organic certification ensures no pesticides or harmful chemicals used in growing. Ethically sourced from farms with fair labor practices.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 2246400000).toISOString(),
+dateModified: new Date(Date.now() - 2246400000).toISOString()
+},
+{
+name: "Gelatin Capsules (Empty)",
+brand: "Health Supplements",
+category: "Supplements",
+ingredients: "Gelatin",
+concernIngredients: "Gelatin (bovine source from non-zabiha animals)",
+manufacturingProcess: "Standard gelatin processing",
+certifications: "None",
+certifierName: "",
+informationSources: "Manufacturer confirmed bovine source but non-zabiha in email dated 06/10/2024",
+status: "mushbooh",
+statusReasoning: "Made from cow gelatin but not from halal slaughtered animals. Some scholars permit this under the principle of transformation, while others consider it impermissible.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 2332800000).toISOString(),
+dateModified: new Date(Date.now() - 2332800000).toISOString()
+},
+{
+name: "Zabiha Beef",
+brand: "Halal Farms",
+category: "Meat",
+ingredients: "100% Beef",
+concernIngredients: "",
+manufacturingProcess: "Hand slaughtered according to Islamic guidelines",
+certifications: "Certified Halal by Islamic Food Council",
+certifierName: "Islamic Food Council",
+informationSources: "Certification documents, conversation with store manager on 05/20/2024",
+status: "halal",
+statusReasoning: "Properly slaughtered according to Islamic guidelines with valid certification from a trusted authority.",
+inShoppingList: true,
+dateAdded: new Date(Date.now() - 2419200000).toISOString(),
+dateModified: new Date(Date.now() - 2419200000).toISOString()
+},
+{
+name: "Beer Battered Onion Rings",
+brand: "Crispy Delights",
+category: "Frozen Foods",
+ingredients: "Onions, batter (flour, beer, spices), vegetable oil",
+concernIngredients: "Beer in batter",
+manufacturingProcess: "Onions dipped in beer batter and pre-fried",
+certifications: "None",
+certifierName: "",
+informationSources: "Product label clearly lists beer as ingredient",
+status: "haram",
+statusReasoning: "Contains beer as an intentional ingredient in the batter. While some alcohol may cook off, it's an intentional ingredient choice and the product is marketed as 'beer battered'.",
+inShoppingList: false,
+dateAdded: new Date(Date.now() - 2505600000).toISOString(),
+dateModified: new Date(Date.now() - 2505600000).toISOString()
+}
+];
+
+// Sample certifier data
+const sampleCertifiers = [
+{
+name: "Islamic Food Council",
+status: "trusted",
+notes: "Well-established certification body with strict standards. They physically inspect slaughterhouses and processing facilities. Verified their credentials with local mosques.",
+website: "www.islamicfoodcouncil.org",
+dateAdded: new Date().toISOString(),
+dateModified: new Date().toISOString()
+},
+{
+name: "Global Halal Authority",
+status: "trusted",
+notes: "International certification body with transparent standards and inspection processes. Recognized by multiple Muslim countries.",
+website: "www.globalhalal.org",
+dateAdded: new Date(Date.now() - 86400000).toISOString(),
+dateModified: new Date(Date.now() - 86400000).toISOString()
+},
+{
+name: "Islamic Society",
+status: "trusted",
+notes: "Local certification body that I've personally verified. They have strict standards and perform regular inspections.",
+website: "www.islamicsociety.org",
+dateAdded: new Date(Date.now() - 172800000).toISOString(),
+dateModified: new Date(Date.now() - 172800000).toISOString()
+},
+{
+name: "Halal Stamp Inc.",
+status: "doubtful",
+notes: "Concerns about lack of transparency in their inspection process. Several reports of certified products containing questionable ingredients. Could not verify their scholarly oversight.",
+website: "www.halalstamp.com",
+dateAdded: new Date(Date.now() - 259200000).toISOString(),
+dateModified: new Date(Date.now() - 259200000).toISOString()
+},
+{
+name: "Quick Halal Certification",
+status: "doubtful",
+notes: "Very quick certification process raises concerns. No evidence of physical inspections. Multiple certified products have ingredients of concern.",
+website: "www.quickhalal.com",
+dateAdded: new Date(Date.now() - 345600000).toISOString(),
+dateModified: new Date(Date.now() - 345600000).toISOString()
+},
+{
+name: "Organic Foods Association",
+status: "neutral",
+notes: "Not a halal certifier but ensures organic standards which often align with tayyib considerations. Good transparency but no specific Islamic oversight.",
+website: "www.organicfoods.org",
+dateAdded: new Date(Date.now() - 432000000).toISOString(),
+dateModified: new Date(Date.now() - 432000000).toISOString()
+},
+{
+name: "Local Islamic Center",
+status: "trusted",
+notes: "My local mosque provides certification services for small local businesses. I've personally observed their inspection process and know the imam who oversees it.",
+website: "www.localislamic.org",
+dateAdded: new Date(Date.now() - 518400000).toISOString(),
+dateModified: new Date(Date.now() - 518400000).toISOString()
+}
+];
+
+// Function to generate sample images (base64 data)
+function generateSampleImage(productName, color) {
+// Create a canvas element
+const canvas = document.createElement('canvas');
+canvas.width = 300;
+canvas.height = 300;
+const ctx = canvas.getContext('2d');
+
+    // Fill background
+    ctx.fillStyle = color || '#f0f0f0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Add product name text
+    ctx.fillStyle = '#333333';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Handle long product names
+    const words = productName.split(' ');
+    if (words.length > 2) {
+      const line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+      const line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+      ctx.fillText(line1, 150, 130);
+      ctx.fillText(line2, 150, 170);
+    } else {
+      ctx.fillText(productName, 150, 150);
+    }
+    
+    return canvas.toDataURL('image/jpeg', 0.8);
+    }
+
+// Add sample data to database
+function addSampleProductsToDb() {
+const productTransaction = db.transaction(['products'], 'readwrite');
+const productStore = productTransaction.objectStore('products');
+
+    let completedProducts = 0;
+    
+    // Clear existing products first
+    const clearRequest = productStore.clear();
+    
+    clearRequest.onsuccess = function() {
+      console.log("Cleared existing products");
+      
+      // Add each sample product
+      sampleProducts.forEach((product, index) => {
+        const request = productStore.add(product);
+        
+        request.onsuccess = function(event) {
+          const productId = event.target.result;
+          console.log(`Added product: ${product.name} with ID: ${productId}`);
+          
+          // Add images for this product
+          const imageTransaction = db.transaction(['images'], 'readwrite');
+          const imageStore = imageTransaction.objectStore('images');
+          
+          // Generate 1-3 sample images per product
+          const numImages = Math.floor(Math.random() * 3) + 1;
+          let colors = ['#e0f7fa', '#e3f2fd', '#f3e5f5', '#e8f5e9', '#fff3e0'];
+          
+          for (let i = 0; i < numImages; i++) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const imageData = generateSampleImage(product.name, color);
+            
+            imageStore.add({
+              productId: productId,
+              data: imageData,
+              name: `${product.name.toLowerCase().replace(/\s+/g, '-')}-${i+1}.jpg`,
+              type: 'image/jpeg'
+            });
+          }
+          
+          completedProducts++;
+          
+          // When all products are added, refresh the UI
+          if (completedProducts === sampleProducts.length) {
+            console.log("All sample products and images added");
+            // Refresh the current view
+            if (currentView === 'dashboardView') {
+              loadDashboard();
+            } else if (currentView === 'productsView') {
+              loadProducts();
+            }
+          }
+        };
+        
+        request.onerror = function(event) {
+          console.error(`Error adding product: ${product.name}`, event.target.error);
+        };
+      });
+    };
+    }
+
+function addSampleCertifiersToDb() {
+const certifierTransaction = db.transaction(['certifiers'], 'readwrite');
+const certifierStore = certifierTransaction.objectStore('certifiers');
+
+    // Clear existing certifiers first
+    const clearRequest = certifierStore.clear();
+    
+    clearRequest.onsuccess = function() {
+      console.log("Cleared existing certifiers");
+      
+      // Add each sample certifier
+      sampleCertifiers.forEach(certifier => {
+        const request = certifierStore.add(certifier);
+        
+        request.onsuccess = function(event) {
+          console.log(`Added certifier: ${certifier.name}`);
+        };
+        
+        request.onerror = function(event) {
+          console.error(`Error adding certifier: ${certifier.name}`, event.target.error);
+        };
+      });
+      
+      console.log("All sample certifiers added");
+      // Refresh the certifiers view if active
+      if (currentView === 'certifiersView') {
+        loadCertifiers();
+      }
+    };
+    }
+
+// Wait for DB to be ready
+function waitForDb() {
+if (db) {
+console.log("Database is ready, adding sample data...");
+addSampleProductsToDb();
+addSampleCertifiersToDb();
+} else {
+console.log("Waiting for database to be ready...");
+setTimeout(waitForDb, 500);
+}
+}
+
+// Start the process
+waitForDb();
+}
+
+// Add a button to the page to load sample data
+document.addEventListener('DOMContentLoaded', function() {
+const settingsView = document.getElementById('settingsView');
+
+// Create sample data section
+const sampleDataSection = document.createElement('div');
+sampleDataSection.className = 'card';
+sampleDataSection.innerHTML = `    <div class="card-header">       <h2 class="card-title">Sample Data</h2>     </div>     <div class="form-group">       <label for="addSampleData">Add Sample Data</label>       <button id="addSampleDataBtn" class="btn btn-secondary">         <i class="fas fa-database"></i> Load 30 Sample Products       </button>       <p class="help-text">Add 30 sample products and 7 certifiers to test the app.</p>     </div>  `;
+
+settingsView.appendChild(sampleDataSection);
+
+// Add event listener
+document.getElementById('addSampleDataBtn').addEventListener('click', function() {
+if (confirm('This will replace your existing data with sample data. Continue?')) {
+addSampleData();
+}
+});
+});
+
+    </script>
+    </body>
+</html>
